@@ -1,0 +1,361 @@
+<div [ngClass]="{ loadingInfo: InfoLoading }">
+  <div class="head">
+    <div class="listacc">
+      <span>Danh sách tài khoản</span>
+    </div>
+    <div class="listSCript">
+      <span>Danh sách kịch bản</span>
+    </div>
+  </div>
+
+  <div class="flex p-4">
+    <div
+      class="divAction w-4/10"
+      style="box-shadow: 1px 1px 3px; height: 82vh; overflow-y: auto; padding-left: 5px;"
+    >
+      <div class="top-account">
+        <div class="select-script">
+          <tds-form-field>
+            <tds-select
+              [(ngModel)]="idScriptRun"
+              style="width: 19vw"
+              valueField="id"
+              textField="scriptName"
+              placeholder="Tên kịch bản"
+              [data]="listScriptRun"
+              [allowClear]="true"
+            >
+            </tds-select>
+            <tds-error>Validation name script</tds-error>
+          </tds-form-field>
+        </div>
+        <div class="btn-submit">
+          <button
+            (click)="runScript()"
+            tds-button
+            color="primary"
+            rounded="!rounded-full"
+          >
+            <span class="flex items-center">
+              <i class="tdsi-success-fill text-lg leading-none mr-2"></i>Chạy
+              kịch bản
+            </span>
+          </button>
+        </div>
+      </div>
+      <div class="table-account">
+        <tds-table
+          #filterTable
+          [listData]="accountActiveList"
+          [(pageSize)]="pageSizeAccountActive"
+          [(pageIndex)]="pageIndexAccountActive"
+          [frontPagination]="false"
+          (queryParams)="onQueryParamsChangeAccountActive($event)"
+          [total]="totalCountAccountActive"
+        >
+          <thead>
+            <tr
+              style="height: 5vh; background-color: #e5e5e5"
+              class="bg-neutral-3-50"
+            >
+              <th
+                class="w-12 pl-2 hover:bg-neutral-3-100"
+                [checked]="checked"
+                [indeterminate]="indeterminate"
+                (checkedChange)="onAllChecked($event)"
+              ></th>
+              <th>
+                Tên tài khoản
+                <button
+                  tds-button-flat-icon
+                  color="primary"
+                  trigger="click"
+                  tds-dropdown
+                  [tdsDropdownMenu]="menu2"
+                  [placement]="'bottomRight'"
+                  [autoClose]="false"
+                >
+                  <i class="tdsi-filter-2-fill"></i>
+                </button>
+                <tds-dropdown-menu #menu2="tdsDropdownMenu">
+                  <tds-select
+                    [(ngModel)]="nameAccountSearch"
+                    (ngModelChange)="changeNameFacebook($event)"
+                    style="width: 10vw"
+                    valueField="nameFacebook"
+                    textField="nameFacebook"
+                    placeholder="tài khoản"
+                    [data]="accountActiveList"
+                    [allowClear]="true"
+                  >
+                  </tds-select>
+                </tds-dropdown-menu>
+              </th>
+              <th>
+                Hồ sơ
+                <button
+                  tds-button-flat-icon
+                  color="primary"
+                  trigger="click"
+                  tds-dropdown
+                  [tdsDropdownMenu]="menu3"
+                  [placement]="'bottomRight'"
+                  [autoClose]="false"
+                >
+                  <i class="tdsi-filter-2-fill"></i>
+                </button>
+                <tds-dropdown-menu #menu3="tdsDropdownMenu">
+                  <tds-select
+                    [(ngModel)]="nameProfileSearch"
+                    (ngModelChange)="changeNameProfile($event)"
+                    style="width: 10vw"
+                    valueField="nameProfile"
+                    textField="nameProfile"
+                    placeholder="Hồ sơ"
+                    [data]="listNameProfile"
+                    [allowClear]="true"
+                  >
+                  </tds-select>
+                </tds-dropdown-menu>
+              </th>
+              <th>Trạng thái</th>
+              <th>
+                Proxy
+                <button
+                  tds-button-flat-icon
+                  color="primary"
+                  trigger="click"
+                  tds-dropdown
+                  [tdsDropdownMenu]="menu4"
+                  [placement]="'bottomRight'"
+                  [autoClose]="false"
+                >
+                  <i class="tdsi-filter-2-fill"></i>
+                </button>
+                <tds-dropdown-menu #menu4="tdsDropdownMenu">
+                  <tds-select
+                    [(ngModel)]="proxyIpSearch"
+                    (ngModelChange)="changeProxyIp($event)"
+                    style="width: 10vw"
+                    valueField="proxyIp"
+                    textField="proxyIp"
+                    placeholder="Proxy ip"
+                    [data]="listProxy"
+                    [allowClear]="true"
+                  >
+                  </tds-select>
+                </tds-dropdown-menu>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              class="border-b border-neutral-2-100 hover:bg-neutral-3-50 text-neutral-1-900"
+              style="height: 5vh"
+              *ngFor="let data of filterTable.data"
+            >
+              <td class="pl-2"
+                [checked]="setOfCheckedId.has(data.id)"
+                [disabled]="data.disabled"
+                (checkedChange)="onItemChecked(data.id, $event)"
+              ></td>
+              <td>{{ data.nameFacebook }}</td>
+              <td tds-tooltip tooltipTitle="{{ data.nameProfile }}">
+                {{ data.nameProfile | formatNameProfile }}
+              </td>
+              <td>
+                <tds-tag *ngIf="data.online" status="success">Online</tds-tag>
+                <tds-tag *ngIf="!data.online" status="secondary"
+                  >Offline</tds-tag
+                >
+              </td>
+              <td>{{ data.proxyIp }}</td>
+            </tr>
+          </tbody>
+        </tds-table>
+      </div>
+    </div>
+    <div style="width: 2%"></div>
+    <div
+      class="tableIsactive w-5/10 pl-2"
+      style="height: 82vh; overflow-y: auto"
+    >
+      <div class="top-script">
+
+        <div class="select-scriptFirst">
+          <tds-form-field style="width: 12vw">
+            <input
+              tdsInput
+              autocomplete="off"
+              placeholder="Nhập tên kịch bản"
+              [(ngModel)]="filter"
+              (ngModelChange)="changeScript($event)"
+            />
+          </tds-form-field>
+        </div>
+        <div class="select-script">
+          <tds-form-field>
+            <tds-select
+              [(ngModel)]="seedingFilter"
+              (ngModelChange)="changeSeeding($event)"
+              style="width: 12vw"
+              valueField="name"
+              textField="name"
+              placeholder="Tên chiến dịch"
+              [data]="listSeeding?.items"
+              [allowClear]="true"
+            >
+            </tds-select>
+            <tds-error>Validation name seeding</tds-error>
+          </tds-form-field>
+        </div>
+        <div class="select-script">
+          <tds-form-field>
+            <tds-select
+              [(ngModel)]="typeFilter"
+              (ngModelChange)="changeTypeScript($event)"
+              style="width: 12vw"
+              placeholder="Loại kịch bản"
+              [data]="listEnumType"
+              [allowClear]="true"
+            >
+            </tds-select>
+            <tds-error>Validation type script</tds-error>
+          </tds-form-field>
+        </div>
+      </div>
+      <div class="table-script">
+        <tds-table
+          #basicTable
+          [listData]="listScript?.items"
+          [(pageSize)]="pageSize"
+          [(pageIndex)]="pageIndex"
+          [frontPagination]="false"
+          (queryParams)="onQueryParamsChange($event)"
+          [total]="totalCount"
+        >
+          <thead>
+            <tr style="height: 5vh; background-color: #e5e5e5">
+              <th></th>
+              <th>Tên kịch bản</th>
+              <th>Loại kịch bản</th>
+              <th>Tài khoản đang chạy</th>
+              <th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-template ngFor let-data [ngForOf]="basicTable.data">
+              <tr
+                class="border-b border-neutral-2-100 hover:bg-neutral-3-50 text-neutral-1-900"
+                style="height: 5vh"
+              >
+                <td
+                  [expand]="expandSet.has(data.id)"
+                  (expandChange)="onExpandChange(data.id, $event)"
+                ></td>
+                <td tds-tooltip tooltipTitle="{{ data.scriptName }}">
+                  {{ data.scriptName | nameScript }}
+                </td>
+                <td>{{ data.typeName }}</td>
+                <td style="text-align: center">{{ data.countAccRun }}</td>
+                <td>
+                  <tds-tag status="info" *ngIf="data.status == 'Đang chạy'">{{
+                    data.status
+                  }}</tds-tag>
+                  <tds-tag status="secondary" *ngIf="data.status == 'Chưa chạy'">{{
+                    data.status
+                  }}</tds-tag>
+                </td>
+              </tr>
+              <tr
+              *ngIf="idScriptToShow == data.id"
+                [expand]="expandSet.has(data.id)"
+                class="border-b border-neutral-2-100 text-neutral-1-900 bg-gray-200"
+              >
+                <tds-table
+                  #table
+                  [listData]="listAccountRun"
+                  tableLayout="fixed"
+                >
+                  <thead>
+                    <tr>
+                      <th>ProxyIp</th>
+                      <th>Name facebook</th>
+                      <th>Trực tuyến</th>
+                      <th>Tác vụ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let data of table.data">
+                      <tr style="height: 4vh">
+                        <td>{{ data.proxyIp }}</td>
+                        <td>{{ data.nameFacebook }}</td>
+                        <td>
+                          <tds-tag *ngIf="data.online" status="success"
+                            >Online</tds-tag
+                          >
+                          <tds-tag *ngIf="!data.online" status="secondary"
+                            >Offline</tds-tag
+                          >
+                        </td>
+                        <td *ngIf="data.isActiveScript">
+                          <tds-tag status="warning">Chưa hoàn thành</tds-tag>
+                        </td>
+                        <td *ngIf="!data.isActiveScript">
+                          <tds-tag status="success">Hoàn thành</tds-tag>
+                        </td>
+                      </tr>
+                    </ng-container>
+                  </tbody>
+                </tds-table>
+              </tr>
+            </ng-template>
+          </tbody>
+        </tds-table>
+      </div>
+      <!-- <tds-modal [(visible)]="isVisible" title="Các tài khoản đang chạy" (onCancel)="handleCancelAcc()"
+        (onOk)="handleOkAcc()">
+        <ng-container *tdsModalContent>
+          <tds-table #tdsTable [listData]="listAccountRun" tableLayout="fixed">
+            <thead>
+              <tr style="text-align:center;">
+                <th>ProxyIp</th>
+                <th>Tên tài khoản</th>
+                <th>Trực tuyến</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="text-align:center;" *ngFor="let data of tdsTable.data">
+                <td>{{ data.proxyIp }}</td>
+                <td>{{ data.nameFacebook }}</td>
+                <td>
+                  <i *ngIf="data.online" style="color:rgb(5, 201, 5)" class="tdsi-radio-circle-fill"></i>
+                  <i *ngIf="!data.online" style="color: red;" class="tdsi-radio-circle-fill"></i>
+                </td>
+              </tr>
+            </tbody>
+          </tds-table>
+        </ng-container>
+      </tds-modal> -->
+    </div>
+  </div>
+  <div *ngIf="InfoLoading" class="loading">
+    <svg
+      class="spinner"
+      width="65px"
+      height="65px"
+      viewBox="0 0 66 66"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle
+        class="path"
+        fill="none"
+        stroke-width="6"
+        stroke-linecap="round"
+        cx="33"
+        cy="33"
+        r="30"
+      ></circle>
+    </svg>
+  </div>
+</div>

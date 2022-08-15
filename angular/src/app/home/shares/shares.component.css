@@ -1,0 +1,9 @@
+.account{
+    border-right: solid 1px #e5e5e5;
+}
+.imageProfile{
+    width: 50px;
+    height : 40px;
+    object-fit: cover;
+    border-radius: 42%;
+}

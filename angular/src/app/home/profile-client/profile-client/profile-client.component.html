@@ -1,0 +1,358 @@
+<div [ngClass]="{ loadingInfo: InfoLoading }">
+  <!-- <div class="nameContent">
+    <span>Account Active</span>
+  </div> -->
+  <tds-tabset class="bg-white" linkRouter>
+    <tds-tab >
+      <a class=" p-4 text-body-2 hover:text-neutral-1-900  block font-semibold  hover:border-b-3 hover:border-primary-1" 
+      *tdsTabLink tds-tab-link [routerLink]="['.']"
+      routerLinkActive #rla="routerLinkActive" 
+      [ngClass]="{'border-b-3 text-neutral-1-900 border-primary-1':rla.isActive,'text-neutral-1-500':!rla.isActive}"
+      [queryParams]="{ tab: 'profile' }" queryParamsHandling="merge">
+                Hồ sơ
+      </a>
+      <div>
+        <div
+          class="flex items-center justify-between"
+          style="padding: 0rem 1rem 0 1rem"
+        >
+          <div style="width: 50%" class="flex items-center">
+            <div>
+              <app-tproxy-button
+                *ngIf="!isShowProfile"
+                [text]="'Hiển thị kịch bản'"
+                [color]="'info'"
+                [icon]="'tdsi-section-fill'"
+                (click)="ViewProfile()"
+                class="ml-2"
+              ></app-tproxy-button>
+              <app-tproxy-button
+                *ngIf="isShowProfile"
+                [text]="'Tắt hiển thị kịch bản'"
+                [color]="'info'"
+                [icon]="'tdsi-section-fill'"
+                (click)="ViewProfile()"
+                class="ml-2"
+              ></app-tproxy-button>
+            </div>
+            <div class="ml-2">
+              <tds-form-field>
+                <input
+                  [(ngModel)]="filterNameProfile"
+                  (ngModelChange)="filterChange($event)"
+                  tdsInput
+                  placeholder="Nhập tên hồ sơ"
+                  size="md"
+                />
+              </tds-form-field>
+            </div>
+          </div>
+          <div class="mr-2">
+            <app-tproxy-button
+              [text]="'Thêm hồ sơ'"
+              [color]="'primary'"
+              [icon]="'tdsi-table-add-line'"
+              class="ml-2"
+              (click)="showModalProfile()"
+            ></app-tproxy-button>
+          </div>
+        </div>
+        <div class="divTable">
+          <tds-table #basicTable [listData]="listProfiles">
+            <thead>
+              <tr
+                style="
+                  height: 5vh;
+                  text-align: center;
+                  background-color: #e5e5e5;
+                "
+              >
+                <th style="font-size: initial">Tên hồ sơ</th>
+                <th style="font-size: initial">Thời gian hoạt động</th>
+                <th *ngIf="isShowProfile">Kịch bản</th>
+                <th style="font-size: initial">Loại nhóm</th>
+                <th style="font-size: initial">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-template ngFor let-data [ngForOf]="basicTable.data">
+                <tr class="tableProfile">
+                  <td>{{ data[0] }}</td>
+                  <td class="p-2">
+                    <div *ngFor="let item of data[1]">
+                      <span>Bắt đầu : {{ item.startTime }}h</span> - Kéo dài :
+                      <span>{{ item.duringMinutes }} phút</span>
+                    </div>
+                  </td>
+                  <td *ngIf="isShowProfile">
+                    <div *ngFor="let script of data[1]">
+                      <div *ngFor="let result of script.listScript">
+                        <p>{{ result }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngFor="let group of data[1]">
+                      <div *ngFor="let result of group.listNameGroupType">
+                        <p>{{ result }}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <app-tproxy-button
+                      [text]="'Delete'"
+                      [color]="'error'"
+                      [icon]="'tdsi-trash-fill'"
+                      class="text-xl text-primary-1 ml-2"
+                      (click)="deleteProfile(data[0])"
+                    ></app-tproxy-button>
+                    <app-tproxy-button
+                      [text]="'Update'"
+                      [color]="'info'"
+                      [icon]="'tdsi-confirm-page-line'"
+                      class="ml-2"
+                      (click)="showModalUpdateProfile(data)"
+                    ></app-tproxy-button>
+                  </td>
+                </tr>
+              </ng-template>
+            </tbody>
+          </tds-table>
+        </div>
+      </div>
+    </tds-tab>
+    <tds-tab>
+      <a class=" p-4 text-body-2 hover:text-neutral-1-900  block font-semibold  hover:border-b-3 hover:border-primary-1" 
+      *tdsTabLink tds-tab-link [routerLink]="['.']"
+      routerLinkActive #rla2="routerLinkActive" 
+      [ngClass]="{'border-b-3 text-neutral-1-900 border-primary-1':rla2.isActive,'text-neutral-1-500':!rla2.isActive}"
+      [queryParams]="{ tab: 'group-type' }" queryParamsHandling="merge">
+                Loại nhóm
+      </a>
+      <ng-template tds-tab>
+        <app-group-type></app-group-type>
+      </ng-template>
+  </tds-tab>
+  </tds-tabset>
+</div>
+<div *ngIf="InfoLoading" class="loading">
+  <svg
+    class="spinner"
+    width="65px"
+    height="65px"
+    viewBox="0 0 66 66"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      class="path"
+      fill="none"
+      stroke-width="6"
+      stroke-linecap="round"
+      cx="33"
+      cy="33"
+      r="30"
+    ></circle>
+  </svg>
+</div>
+<tds-modal
+  [(visible)]="isVisibleProfile"
+  title="Thêm hồ sơ Tài khoản"
+  (onCancel)="handleCancelProfile()"
+  (onOk)="handleOkProfile()"
+>
+  <ng-container *tdsModalContent>
+    <div>
+      <tds-form-field>
+        <tds-label>Nhập tên hồ sơ</tds-label>
+        <input
+          tdsInput
+          autocomplete="off"
+          placeholder="Tên hồ sơ"
+          [formControl]="nameProfile"
+          [required]="true"
+          allowClear="true"
+        />
+        <tds-error *ngIf="nameProfile.invalid">{{
+          getErrorMessage(nameProfile)
+        }}</tds-error>
+      </tds-form-field>
+      <tds-form-field>
+        <tds-label>Chọn kịch bản</tds-label>
+        <tds-select
+          placeholder="chọn kịch bản"
+          valueField="id"
+          textField="scriptName"
+          [required]="true"
+          [data]="listScriptDefault"
+          [allowClear]="true"
+          mode="multiple"
+          [formControl]="listIdScriptDefault"
+        >
+        </tds-select>
+      </tds-form-field>
+      <tds-form-field>
+        <tds-label>Chọn loại nhóm</tds-label>
+        <tds-select
+          placeholder="chọn loại nhóm"
+          valueField="id"
+          textField="name"
+          [required]="false"
+          [data]="listGroupType"
+          [allowClear]="true"
+          mode="multiple"
+          [formControl]="listIdGroupType"
+        >
+        </tds-select>
+      </tds-form-field>
+      <form [formGroup]="form" class="bg-white dark:bg-d-neutral-3-100 rounded">
+        <ng-container formArrayName="lessons">
+          <ng-container
+            *ngFor="let lessonForm of lessons.controls; let i = index"
+          >
+            <div class="flex" [formGroupName]="i">
+              <tds-form-field class="w-full">
+                <tds-label>Giờ bắt đầu: </tds-label>
+                <tds-input-number
+                  [min]="1"
+                  [max]="24"
+                  [step]="1"
+                  formControlName="startTime"
+                  [required]="true"
+                ></tds-input-number>
+              </tds-form-field>
+              <tds-form-field class="ml-4 w-full">
+                <tds-label>Thời gian chạy: </tds-label>
+                <tds-input-number
+                  [min]="1"
+                  [step]="1"
+                  formControlName="duringMinutes"
+                  [required]="true"
+                ></tds-input-number>
+              </tds-form-field>
+              <div class="ml-4 mt-7 h-8">
+                <button
+                  tds-button-icon
+                  color="error"
+                  size="sm"
+                  (click)="deleteLesson(i)"
+                >
+                  <span class="flex items-center">
+                    <i class="tdsi-close-fill"></i>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+        <div class="mt-2">
+          <button tds-button color="primary" (click)="addLesson()">
+            Thêm khung giờ
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+</tds-modal>
+<tds-modal
+  [(visible)]="isVisibleUpdateProfile"
+  title="Sửa hồ sơ tài khoản"
+  (onCancel)="handleCancelUpdateProfile()"
+  (onOk)="handleOkUpdateProfile()"
+>
+  <ng-container *tdsModalContent>
+    <div>
+      <tds-form-field>
+        <tds-label>Tên hồ sơ</tds-label>
+        <input
+          tdsInput
+          autocomplete="off"
+          placeholder="nhập tên hồ sơ"
+          [formControl]="nameProfile"
+          [required]="true"
+        />
+        <tds-error *ngIf="nameProfile.invalid">{{
+          getErrorMessage(nameProfile)
+        }}</tds-error>
+      </tds-form-field>
+      <tds-form-field>
+        <tds-label>Chọn kịch bản</tds-label>
+        <tds-select
+          placeholder="chọn kịch bản"
+          [required]="true"
+          valueField="scriptName"
+          textField="scriptName"
+          [(ngModel)]="listScriptUpdate.name[0]"
+          [data]="listScriptDefault"
+          [allowClear]="true"
+          (ngModelChange)="onModelChangeUpdate($event)"
+          mode="multiple"
+        >
+        </tds-select>
+      </tds-form-field>
+      <tds-form-field>
+        <tds-label>Chọn loại nhóm</tds-label>
+        <tds-select
+          placeholder="chọn loại nhóm"
+          [required]="true"
+          valueField="name"
+          textField="name"
+          [(ngModel)]="listGroupUpdate.name[0]"
+          [data]="listGroupType"
+          [allowClear]="true"
+          mode="multiple"
+        >
+        </tds-select>
+      </tds-form-field>
+      <form
+        [formGroup]="form"
+        class="bg-white dark:bg-d-neutral-3-100 rounded"
+        style="max-height: 300px; overflow-y: auto"
+      >
+        <ng-container formArrayName="lessons">
+          <ng-container
+            *ngFor="let lessonForm of lessons.controls; let i = index"
+          >
+            <div class="flex" [formGroupName]="i">
+              <tds-form-field class="w-full">
+                <tds-label>Giờ bắt đầu: </tds-label>
+                <tds-input-number
+                  [min]="1"
+                  [max]="24"
+                  [step]="1"
+                  formControlName="startTime"
+                  [required]="true"
+                ></tds-input-number>
+              </tds-form-field>
+              <tds-form-field class="ml-4 w-full">
+                <tds-label>Thời gian kéo dài: </tds-label>
+                <tds-input-number
+                  [min]="1"
+                  [step]="1"
+                  formControlName="duringMinutes"
+                  [required]="true"
+                ></tds-input-number>
+              </tds-form-field>
+              <div class="ml-4 mt-7 h-8">
+                <button
+                  tds-button-icon
+                  color="error"
+                  size="sm"
+                  (click)="deleteLesson(i)"
+                >
+                  <span class="flex items-center">
+                    <i class="tdsi-close-fill"></i>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+        <div class="mt-2">
+          <button tds-button color="primary" (click)="addLesson()">
+            Thêm khung giờ
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+</tds-modal>

@@ -1,0 +1,20 @@
+.tableLogs{
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 82vh;
+    padding : 1rem;
+}
+.showmoreLog{
+    display: flex;
+    margin-top: 1rem;
+    border-top: solid 1px #e5e5e5;
+    align-items: center;
+}
+.datePicker{
+    padding: 0.5rem;
+    box-shadow: 0px 2px 2px #e5e5e5;
+}
+.hrefHover:hover
+{
+  color : rgb(45 196 241)
+}

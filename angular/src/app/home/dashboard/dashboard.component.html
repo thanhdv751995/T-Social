@@ -1,0 +1,236 @@
+<div style="overflow-y: auto" [ngClass]="{ loadingInfo: InfoLoading }">
+  <div class="containerCard">
+    <tds-card class="card">
+      <tds-card-content
+        class="card-content active"
+        (click)="getListActive('1')"
+        [ngClass]="{ activeDiv: conditionNumber === 1 }"
+      >
+        <div class="text-center">
+          <i class="tdsi-flag-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Tác vụ chờ chạy</div>
+          <div class="text-center">{{ infoTotalAccount?.taskSchedule }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card" (click)="getListActive('2')">
+      <tds-card-content
+        class="card-content alive"
+        [ngClass]="{ activeDiv: conditionNumber == 2 }"
+      >
+        <div class="text-center">
+          <i class="tdsi-warning-2-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Tác vụ chưa xử lý</div>
+          <div class="text-center">{{ infoTotalAccount?.taskProcessing }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card" (click)="getListActive('3')">
+      <tds-card-content
+        class="card-content total"
+        [ngClass]="{ activeDiv: conditionNumber == 3 }"
+      >
+        <div class="text-center">
+          <i class="tdsi-live-session-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Tài khoản hoạt động</div>
+          <div class="text-center">{{ infoTotalAccount?.accountOnline }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card disconnected" (click)="getListActive('4')">
+      <tds-card-content
+        class="card-content"
+        [ngClass]="{ activeDiv: conditionNumber == 4 }"
+      >
+        <div class="text-center">
+          <i class="tdsi-lock-line text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Tài khoản bị checkpoint</div>
+          <div class="text-center">
+            {{ infoTotalAccount?.accountCheckpoint }}
+          </div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+  </div>
+  <div class="divTable">
+    <tds-table
+      #table
+      [listData]="listOfData"
+      tableLayout="fixed"
+      [total]="totalTable"
+      [(pageSize)]="pageSize"
+      [(pageIndex)]="pageIndex"
+      (queryParams)="onQueryParamsChange($event)"
+      [frontPagination]="false"
+    >
+      <thead>
+        <tr style="height: 5vh; background-color: #e5e5e5">
+          <th width="60px">
+            <i
+              (click)="getListActive('5')"
+              class="tdsi-reload-fill text-primary-1 text-xl cursor-pointer"
+            ></i>
+          </th>
+          <th>Tên tài khoản</th>
+          <th>ID tài khoản</th>
+          <th style="text-align:center ;">Trực tuyến</th>
+          <th>ProxyIp</th>
+          <th>Trạng thái</th>
+          <th>Hoạt động cuối cùng</th>
+          <th>Tổng số tác vụ</th>
+          <th>Tác vụ hoàn thành</th>
+          <th>Tác vụ hiện tại</th>
+          <th>Tác vụ đang chờ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let data of table.data">
+          <tr class="tableProfile">
+            <td
+              [expand]="expandSet.has(data.id)"
+              (expandChange)="onExpandChange(data.id, $event)"
+            ></td>
+            <td>{{ data.nameFacebook }}</td>
+            <td>{{ data.userName }}</td>
+            <td style="text-align:center">
+              <tds-tag status="success" *ngIf ="data.online">Online</tds-tag>
+                <tds-tag status="secondary" *ngIf ="!data.online">Offline</tds-tag>
+            </td>
+            <td>{{ data.proxyIp }}</td>
+            <td>
+              <span style = "color:rgb(255, 87, 87)"*ngIf="!data.isActive">Chưa cấu hình</span>
+              <span style="color: rgb(0, 139, 0)" *ngIf="data.isActive">Sẵn sàng</span>
+            </td>
+            <td class="number">
+              <tds-button-group *ngIf="data.lastActivity.scriptName != null">
+                <button
+                  tds-button
+                  color="secondary"
+                  tds-dropdown
+                  trigger="click"
+                  [tdsDropdownMenu]="menu"
+                  [placement]="'topCenter'"
+                >
+                  <span class="flex items-center"> Xem </span>
+                </button>
+                <tds-dropdown-menu #menu="tdsDropdownMenu">
+                  <div class="w-full">
+                    <div tds-dropdown-item>
+                      <div>
+                        <span style="font-weight: 700">Tên hoạt động : </span>
+                        <span>{{ data.lastActivity.scriptName |formatNameClientUsingScript}}</span>
+                      </div>
+                      <div>
+                        <span style="font-weight: 700">Đường dẫn : </span>
+                        <span>
+                          <a *ngIf="data.lastActivity.url.includes('facebook.com')" class="link" [href]="data.lastActivity.url|formatLink" target="_blank">Đường dẫn tại đây</a>
+                          <a *ngIf="!data.lastActivity.url.includes('facebook.com')" class="link" href="http://www.facebook.com/{{data.lastActivity.url}}" target="_blank">Đường dẫn tại đây</a>
+                        </span
+                        >
+                      </div>
+                      <div>
+                        <span style="font-weight: 700">Thời gian : </span>
+                        <span>{{
+                          data.lastActivity.timeActivity | date: "medium"
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </tds-dropdown-menu>
+              </tds-button-group>
+              <span *ngIf="data.lastActivity.scriptName == null">_</span>
+            </td>
+            <td class="number">{{ data.totalTask }}</td>
+            <td class="number">{{ data.totalTaskFinish }}</td>
+            <td class="number">
+              <div *ngIf="data.currentTask != null">
+                <tds-button-group>
+                  <button
+                    tds-button
+                    color="secondary"
+                    tds-dropdown
+                    trigger="click"
+                    [tdsDropdownMenu]="menuCurrentTask"
+                    [placement]="'topCenter'"
+                  >
+                    <span class="flex items-center"> Xem </span>
+                  </button>
+                  <tds-dropdown-menu #menuCurrentTask="tdsDropdownMenu">
+                    <div class="w-full">
+                      <div tds-dropdown-item>
+                        <div>
+                          <span style="font-weight: 700">Tên kịch bản : </span>
+                          <span>{{ data.currentTask?.scriptName }}</span>
+                        </div>
+                        <div style="width: 400px; word-break: break-all">
+                          <span style="font-weight: 700">Loại kịch bản : </span>
+                          <span>{{ data.currentTask?.typeName }}</span>
+                        </div>
+                        <div style="width: 400px; word-break: break-all">
+                          <span style="font-weight: 700">Giá trị : </span>
+                          <span>{{ data.currentTask?.value }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </tds-dropdown-menu>
+                </tds-button-group>
+              </div>
+              <span *ngIf="data.currentTask == null">_</span>
+            </td>
+            <td class="number">{{ data.totalTaskWait }}</td>
+          </tr>
+          <tr
+            *ngIf="idClientToShow == data.id"
+            [expand]="expandSet.has(data.id)"
+            class="border-b border-neutral-2-100 text-neutral-1-900"
+          >
+            <td style="padding-left: 5rem">
+              <tds-tabset>
+                <!-- <tds-tab title="Biểu đồ">
+                  <div style="width: 1000px; height: 500px; padding-left: 5rem">
+                    <app-client-activity-chart
+                      *ngIf="idClientToShow == data.id"
+                      [userNameChart]="data.userName"
+                    ></app-client-activity-chart>
+                  </div>
+                </tds-tab> -->
+                <tds-tab title="Bạn bè">
+                  <ng-template tds-tab>
+                    <app-friends [userNameChart]="data.id"></app-friends>
+                  </ng-template>
+                </tds-tab>
+                <!-- <tds-tab title="FanPage">
+                  <app-fanpage-facebook-client></app-fanpage-facebook-client>
+                </tds-tab> -->
+                <tds-tab title="Nhóm">
+                  <ng-template tds-tab>
+                    <app-group [userNameChart]="data.userName"></app-group>         
+                </ng-template>
+                </tds-tab>
+                <tds-tab title="Seedings">
+                  <ng-template tds-tab>
+                    <app-client-seeding-dashboard [clientId]="data.userName"></app-client-seeding-dashboard>       
+                </ng-template>
+                </tds-tab>
+              </tds-tabset>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </tds-table>
+  </div>
+  <div>
+    <!-- <app-polar-chart></app-polar-chart> -->
+  </div>
+</div>
+<div>
+  <app-loading [InfoLoading]="InfoLoading"> </app-loading>
+</div>

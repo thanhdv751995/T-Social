@@ -1,0 +1,140 @@
+.container-fluid{
+    margin: 15px;
+}
+.containerCard{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+.card{
+    width: 24%;
+}
+.card-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.icon{
+    color: white;
+}
+.disconnected{
+    background: rgb(45 196 241);
+}
+.active{
+    background: rgb(45 196 241);
+}
+.total{
+    background: rgb(45 196 241);
+}
+.alive{
+    background: rgb(45 196 241);
+}
+  .tableScript:hover
+  {
+    background-color: #e5e5e5;
+  }
+  .tableContainer::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+    border-radius: 5px;
+  }
+  
+  .tableContainer::-webkit-scrollbar {
+    width: 5px;
+    background-color: #d5ecf7;
+    border-radius: 5px;
+  }
+  
+  .tableContainer::-webkit-scrollbar-thumb {
+    background-color: rgb(45 196 241);
+    border-radius: 5px;
+  }
+  .link:visited {
+    color: green;
+  }
+  .link:link {
+    color: rgb(82, 82, 245)
+  }
+  .link:hover {
+    color: blue;
+  }
+  .link{
+    text-decoration: underline
+  }
+  .content{
+    font-weight: 600;
+  }
+  .form-addScript{
+    display: flex;
+  }
+  .type-add{
+    width: 40%;
+  }
+  .body-add{
+    margin-left: 2vw;
+    width: 60%;
+    border: solid 1px #e5e5e5;
+    padding: 0.5rem 1rem;
+  }
+  .list-Type{
+    border: solid 1px #e5e5e5;
+    padding: 0.25rem;
+    margin-bottom: 0.25rem;
+    border-radius: 0.25rem;
+  }
+  .type-script{
+    margin: 0.3rem;
+  }
+  .isActive{
+    background-color: #2dc4f1 ;
+    color: white
+  }
+  $offset: 187;
+  $duration: 1.4s;
+  
+  .spinner {
+    animation: rotator $duration linear infinite;
+  }
+  
+  @keyframes rotator {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(270deg); }
+  }
+  
+  .path {
+    stroke-dasharray: $offset;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation:
+      dash $duration ease-in-out infinite, 
+      colors ($duration*4) ease-in-out infinite;
+  }
+  
+  @keyframes colors {
+    0% { stroke: #4285F4; }
+    25% { stroke: #DE3E35; }
+    50% { stroke: #F7C223; }
+    75% { stroke: #1B9A59; }
+    100% { stroke: #4285F4; }
+  }
+  
+  @keyframes dash {
+   0% { stroke-dashoffset: $offset; }
+   50% {
+     stroke-dashoffset: $offset/4;
+     transform:rotate(135deg);
+   }
+   100% {
+     stroke-dashoffset: $offset;
+     transform:rotate(450deg);
+   }
+  }
+  .loading{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  }
+  .loadingInfo{
+    opacity: 0.4;
+  }

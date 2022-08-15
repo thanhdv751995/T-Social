@@ -1,0 +1,56 @@
+<div class="flex justify-between">
+  <div class ="flex">
+    <!-- <tds-date-picker
+      placeholder ='Nhập ngày bắt đầu'
+      [(ngModel)]="startDateChart"
+      (ngModelChange)="onChangeStartDate($event)"
+      [allowClear]="true"
+    >
+    </tds-date-picker>
+    <tds-date-picker
+      class="ml-2"
+      placeholder ='Nhập ngày kết thúc'
+      [(ngModel)]="endDateChart"
+      (ngModelChange)="onChangeEndDate($event)"
+      [allowClear]="true"
+    >
+    </tds-date-picker> -->
+    <tds-range-picker  style="width: 300px" [(ngModel)]="rangeDate" (ngModelChange)="onChange($event)">
+    </tds-range-picker>
+  </div>
+  <div class="flex items-center">
+    <i tds-popover popoverContent="Xem Logs" popoverPlacement="top" (click) ="logActivity(userNameChart)" class="tdsi-order-fill text-xl cursor-pointer"></i>
+  </div>
+</div>
+<div>
+    <canvas #lineCanvas></canvas>
+</div>
+<!-- <tds-modal [(visible)]="isVisible" title="Logs Activity" 
+    (onCancel)="handleCancel()" (onOk)="handleOk()" [footer]="null">
+    <ng-container *tdsModalContent>
+      <tds-table #basicTable 
+      [frontPagination]="false"
+      [listData]="logsActivity" 
+      [total]="totalTable"    
+      [(pageSize)]="pageSize"
+      [(pageIndex)]="pageIndex"
+      (queryParams) = "onQueryParamsChange($event)">
+        <thead>
+              <tr style="height: 5vh; text-align: center; background-color: #e5e5e5">
+                    <th>Tên loại kịch bản</th>
+                    <th>Nội dung kịch bản</th>
+                    <th>Thời gian </th>
+              </tr>
+        </thead>
+        <tbody>
+            <ng-template ngFor let-data [ngForOf]="basicTable.data" >
+                <tr class="tableProfile">
+                    <td>{{ data.typeName }}</td>
+                    <td>{{ data.content }}</td>
+                    <td>{{ data.creationTime | date:'medium' }}</td>
+                </tr>
+            </ng-template>
+        </tbody>
+    </tds-table>
+    </ng-container>
+</tds-modal> -->

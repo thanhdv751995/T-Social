@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Extention.Management.HttpApi</name>
+    </assembly>
+    <members>
+        <member name="M:Extention.Management.Controllers.Clients.ClientController.GetListAccountFacebook(System.Int32,System.Int32,System.Nullable{System.Int32})">
+             <summary>
+            ConditionNumber:
+             1 Tài khoản đang chờ chạy
+            2 Đang hoạt động
+            3 Không hoạt động
+            4 Bị checkpoint
+             </summary>
+             <param name="skip"></param>
+             <param name="take"></param>
+             <param name="conditionNumber">
+             </param>
+             <returns></returns>
+        </member>
+        <member name="M:Extention.Management.Controllers.Kafka.KafkaController.Producer(Extention.Management.Logs.CreateProxyClientLogDto)">
+            <summary>
+             Add Log to MQ
+            </summary>
+        </member>
+        <member name="M:Extention.Management.Controllers.Proxys.ProxyController.PingHostAsync(Extention.Management.Proxys.HostsDto)">
+            <summary>
+            Ping Host by IP Address: Ex: 127.0.0.1
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Extention.Management.Controllers.Proxys.ProxyController.GetProxyAndAccountConfigAsync">
+            <summary>
+            Get FB Account and Proxy IP not Active for extension to config
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Extention.Management.Controllers.Scripts.ScriptController.GetListAsync(Extention.Management.Scripts.GetScriptListDto,System.Nullable{Extention.Management.Type.Type},System.String)">
+            <summary>
+            Type = 0 : Get All.
+            Type = 1 : Get Type = Default.
+            Type = 2 : Get Type = Not Default.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Extention.Management.Controllers.Seeding.SeedingController.GetListSeeding(System.String,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            ConditionValue: 
+            1: Tác vụ đang chạy
+            2: Tác vụ đã xử lý
+            </summary>
+            <param name="name"></param>
+            <param name="skip"></param>
+            <param name="take"></param>
+            <param name="conditionValue"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

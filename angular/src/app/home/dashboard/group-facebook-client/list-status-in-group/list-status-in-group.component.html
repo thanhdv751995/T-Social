@@ -1,0 +1,26 @@
+
+<div class ="listStatusInGroup">
+    <tds-table #table [listData]="listOfData" tableLayout="fixed">
+        <thead>
+            <tr style="height: 4vh; text-align: center; background-color: #e5e5e5">
+                <th>Tiêu đề</th>
+                <th>Nội dung bài</th>
+                <th>Thời gian đăng bài</th>
+                <th>Số lượng cảm xúc</th>
+                <th>Số bình luận</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-container *ngFor="let data of table.data">
+                <tr class="tableProfile">
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.age }}</td>
+                    <td>10:AM</td>
+                    <td>10</td>
+                    <td>5</td>
+                </tr>
+            </ng-container>
+        </tbody>
+    </tds-table>
+</div>
+

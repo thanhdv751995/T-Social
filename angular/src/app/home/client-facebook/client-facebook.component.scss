@@ -1,0 +1,125 @@
+.listAccoumt {
+  height: 100%;
+  padding-top: 1%;
+}
+.tableAccount {
+  border: solid 1px #e5e5e5;
+  padding: 1%;
+  height: 78vh;
+}
+.nameContent {
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1%;
+  background: rgb(45 196 241);
+  align-items: center;
+  color: white;
+  font-size: medium
+}
+.inputTick {
+  text-align: center;
+  width: 15%;
+  margin-left: 1%;
+}
+.addAccount {
+  display: flex;
+  margin-bottom: 1%;
+  justify-content: space-evenly;
+  align-items: center;
+}
+html, body { height: 100%; }
+
+body {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+// Here is where the magic happens
+
+$offset: 187;
+$duration: 1.4s;
+
+.spinner {
+  animation: rotator $duration linear infinite;
+}
+
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+
+.path {
+  stroke-dasharray: $offset;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation:
+    dash $duration ease-in-out infinite, 
+    colors ($duration*4) ease-in-out infinite;
+}
+
+@keyframes colors {
+  0% { stroke: #4285F4; }
+  25% { stroke: #DE3E35; }
+  50% { stroke: #F7C223; }
+  75% { stroke: #1B9A59; }
+  100% { stroke: #4285F4; }
+}
+
+@keyframes dash {
+ 0% { stroke-dashoffset: $offset; }
+ 50% {
+   stroke-dashoffset: $offset/4;
+   transform:rotate(135deg);
+ }
+ 100% {
+   stroke-dashoffset: $offset;
+   transform:rotate(450deg);
+ }
+}
+.loading{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.loadingInfo{
+  opacity: 0.4;
+}
+.profile:hover{
+  background-color: #e5e5e5
+}
+.type {
+  display: flex;
+  align-content: space-between;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.tableProfile
+{
+  height: 50vh;
+  overflow-y: auto;
+}
+.link:visited {
+  color: green;
+}
+.link:link {
+  color: rgb(82, 82, 245)
+}
+.link:hover {
+  color: blue;
+}
+.link{
+  text-decoration: underline
+}
+.uploadAvatar{
+  border-radius: 5px;
+  border: solid 1px #e5e5e5;
+  display: flex;
+  align-items: center;
+  background: #e5e5e5;
+  input{
+      border: none;
+      width: 100%;
+  }
+}

@@ -1,0 +1,65 @@
+<div class="container-fluid">
+  <div
+    style="
+      margin-top: 10px;
+      margin-left: 5px;
+      max-height: 80.5vh;
+      overflow-y: auto;
+      padding: 1rem;
+      border: solid 1px #e5e5e5;
+    "
+    class="tableContainer"
+  >
+    <tds-table
+      #basicTable
+      [listData]="listVirtualMachine"
+      [pageSize]="listVirtualMachine?.length"
+      [showPagination]="false"
+    >
+      <thead>
+        <tr style="height: 5vh; text-align: center; background-color: #e5e5e5">
+          <th>Tên Máy</th>
+          <th>Trạng thái kích hoạt</th>
+          <th>Thời gian tạo</th>
+          <th>Thời gian kích hoạt cuối cùng</th>
+          <th>Kích hoạt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="basicTable.data">
+          <tr class="tableProxy" style="height: 4vh; text-align: center">
+            <td>{{ data.name }}</td>
+            <td>
+              <tds-tag
+                [status]="data.isActive ? 'success' : 'error'"
+                rounded="rounded-full"
+                >{{ data.isActive }}</tds-tag
+              >
+            </td>
+            <td>
+              {{ data.creationTime | date: "medium" }}
+            </td>
+            <td>
+              {{
+                data.lastModificationTime
+                  ? (data.lastModificationTime | date: "medium")
+                  : nullLastModified
+              }}
+            </td>
+            <td>
+              <app-tproxy-button
+                [color]="data.isActive ? 'primary' : 'error'"
+                [icon]="
+                  data.isActive
+                    ? 'tdsi-checkbox-check-fill'
+                    : 'tdsi-checkbox-indeterminate-fill'
+                "
+                (click)="updateVirtualMachine(data.name)"
+              ></app-tproxy-button>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </tds-table>
+  </div>
+</div>

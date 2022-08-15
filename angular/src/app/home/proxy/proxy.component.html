@@ -1,0 +1,157 @@
+<div class="container-fluid">
+  <div class="containerCard">
+    <tds-card class="card total">
+      <tds-card-content class="card-content total">
+        <div class="text-center">
+          <i class="tdsi-share-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Total</div>
+          <div class="text-center">{{ listProxy?.length }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card">
+      <tds-card-content class="card-content active">
+        <div class="text-center">
+          <i class="tdsi-wifi-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Active</div>
+          <div class="text-center">{{ totalActive }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card">
+      <tds-card-content class="card-content alive">
+        <div class="text-center">
+          <i class="tdsi-live-broadcast-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Alive</div>
+          <div class="text-center">{{ hostsAlive?.length }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card disconnected">
+      <tds-card-content class="card-content">
+        <div class="text-center">
+          <i class="tdsi-flash-off-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Disconnected</div>
+          <div class="text-center">{{ hostsDisconnected?.length }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+  </div>
+  <div
+    style="
+      margin-top: 10px;
+      margin-left: 5px;
+      max-height: 80.5vh;
+      overflow-y: auto;
+      padding: 1rem;
+      border: solid 1px #e5e5e5;
+    "
+    class="tableContainer"
+  >
+    <tds-table
+      #basicTable
+      [listData]="listProxy"
+      [pageSize]="listProxy?.length"
+      [showPagination]="false"
+    >
+      <thead>
+        <tr style="height: 5vh; text-align: center; background-color: #e5e5e5">
+          <th>Proxy Ip</th>
+          <th>Kích hoạt</th>
+          <th>Trạng thái</th>
+          <th>Số Account Facebook cấu hình</th>
+          <th>Thời gian tạo</th>
+          <th>Thời gian kích hoạt cuối cùng</th>
+          <th>Kích hoạt</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="basicTable.data">
+          <tr class="tableProxy" style="height: 4vh; text-align: center">
+            <td>{{ data.proxyIp }}</td>
+            <td>
+              <tds-tag
+                [status]="data.isActive ? 'success' : 'error'"
+                rounded="rounded-full"
+                >{{ data.isActive }}</tds-tag
+              >
+            </td>
+            <td>
+              <div
+                *ngIf="
+                  !hostsAlive.includes(data.proxyIp) &&
+                    !hostsDisconnected.includes(data.proxyIp) &&
+                    data.isActive;
+                  else donePing
+                "
+              >
+                <tds-spinner
+                  [color]="'secondary'"
+                  class="mr-1 w-5 h-5"
+                ></tds-spinner>
+              </div>
+              <ng-template #donePing>
+                <tds-tag
+                  *ngIf="data.isActive"
+                  [status]="
+                    hostsAlive.includes(data.proxyIp) ? 'success' : 'error'
+                  "
+                  rounded="rounded-full"
+                  >{{
+                    hostsAlive.includes(data.proxyIp) ? "Alive" : "Disconnected"
+                  }}</tds-tag
+                >
+              </ng-template>
+            </td>
+            <td>
+              {{ data.accountOnProxy }}
+            </td>
+            <td>
+              {{ data.creationTime | date: "medium" }}
+            </td>
+            <td>
+              {{
+                data.lastModificationTime
+                  ? (data.lastModificationTime | date: "medium")
+                  : nullLastModified
+              }}
+            </td>
+            <td>
+              <app-tproxy-button
+                [color]="data.isActive ? 'primary' : 'error'"
+                [icon]="
+                  data.isActive
+                    ? 'tdsi-checkbox-check-fill'
+                    : 'tdsi-checkbox-indeterminate-fill'
+                "
+                (click)="updateActiveByProxyIp(data.proxyIp)"
+              ></app-tproxy-button>
+            </td>
+            <td>
+              <app-tproxy-button
+                [text]="'Logs'"
+                [color]="'secondary'"
+                [icon]="'tdsi-quick-apply-fill'"
+                (click)="showProxyClientLogs(data.proxyIp)"
+              ></app-tproxy-button>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </tds-table>
+  </div>
+</div>
+<!-- <div *ngIf="isVisible" class="h-screen absolute top-0 left-0 z-9999 overflow-hidden w-screen bg-black">
+  <div>
+    <button tds-button color="info" (click)="handleCancel()" style="color:white">Close</button>
+  </div>
+</div> -->

@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>Extention.Management</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>.\Extention.Management.HttpApi.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Extention.Management.Application.Contracts\Extention.Management.Application.Contracts.csproj" />
+    <ProjectReference Include="..\Extention.Management.Application\Extention.Management.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="1.8.2" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.1.0" />
+    <PackageReference Include="TMT.Authentications.HttpApi" Version="1.0.0" />
+    <PackageReference Include="Volo.Abp.Identity.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.TenantManagement.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

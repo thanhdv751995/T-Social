@@ -1,0 +1,327 @@
+<div class="container-fluid" [ngClass]="{ loadingInfo: InfoLoading }">
+  <div class="containerCard">
+    <tds-card class="card">
+      <tds-card-content class="card-content total">
+        <div class="text-center">
+          <i class="tdsi-paper-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Số tài khoản sử dụng kịch bản</div>
+          <div class="text-center">{{ listProxyUsingScript?.totalCount }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card">
+      <tds-card-content class="card-content active">
+        <div class="text-center">
+          <i class="tdsi-order-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Số Proxy đang sử dụng kịch bản</div>
+          <div class="text-center">{{ totalProxyActive }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card">
+      <tds-card-content class="card-content alive">
+        <div class="text-center">
+          <i class="tdsi-copy-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Kịch bản</div>
+          <div class="text-center">{{ totalScript }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card disconnected">
+      <tds-card-content class="card-content">
+        <div class="text-center">
+          <i class="tdsi-wifi-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Được kích hoạt</div>
+          <div class="text-center">{{ totalActive }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+  </div>
+  <div
+    style="
+      margin-top: 10px;
+      margin-left: 5px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+      overflow-y: auto;
+      display: flex;
+    "
+  >
+    <!-- <input
+      tdsInput
+      autocomplete="off"
+      placeholder="Tên chiến dịch"
+      [(ngModel)]="seedingName"
+      (ngModelChange)="filterCampaign($event)"
+    /> -->
+    <tds-form-field style="width: 20%">
+      <input
+        tdsInput
+        autocomplete="off"
+        placeholder="Nhập tên tài khoản"
+        [(ngModel)]="clientId"
+        (ngModelChange)="ngModelChangeIP($event)"
+      />
+    </tds-form-field>
+    <tds-form-field class="ml-4" style="width: 20%">
+      <input
+        tdsInput
+        autocomplete="off"
+        placeholder="Nhập tên kịch bản"
+        [(ngModel)]="scriptName"
+        (ngModelChange)="ngModelChangeScript($event)"
+      />
+    </tds-form-field>
+    <!-- <tds-select
+      style="max-width: 20%"
+      class="ml-4"
+      placeholder="Chọn kịch bản"
+      [ngModel]="scriptName"
+      [data]="listScriptFilter"
+      [allowClear]="true"
+      (ngModelChange)="ngModelChangeScript($event)"
+    >
+    </tds-select> -->
+    <tds-select
+      class="ml-4"
+      style="max-width: 20%"
+      placeholder="Chọn chiến dịch"
+      [(ngModel)]="nameSeeding"
+      [data]="listNameSeeding"
+      [allowClear]="true"
+      (ngModelChange)="ngModelChangeSeeding($event)"
+    >
+    </tds-select>
+    <tds-select
+      style="max-width: 20%"
+      class="ml-4"
+      placeholder="Chọn kiểu kịch bản"
+      [ngModel]="type"
+      [data]="listEnumType"
+      [allowClear]="true"
+      (ngModelChange)="ngModelChangeType($event)"
+    >
+    </tds-select>
+    <tds-select
+      style="max-width: 20%"
+      class="ml-4"
+      placeholder="Chọn hoạt động"
+      [ngModel]="active"
+      [data]="listActiveFilter"
+      [allowClear]="true"
+      (ngModelChange)="ngModelChangeActive($event)"
+    >
+    </tds-select>
+  </div>
+  <div
+    style="
+      margin-top: 10px;
+      margin-left: 5px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+      overflow-y: auto;
+      display: flex;
+      align-items: center;
+    "
+  >
+    <!-- <app-tproxy-button
+      [text]="'Repeat All Script Default'"
+      [color]="'primary'"
+      [icon]="'tdsi-reply-line'"
+      style="margin-right: 10px"
+      (click)="showModal(true)"
+    ></app-tproxy-button>
+    <tds-modal
+      [(visible)]="isVisible"
+      title="Choose Proxy To {{
+        isRepeatScript ? 'Repeat' : 'Revoke'
+      }}. Default All"
+      (onCancel)="handleCancel()"
+      (onOk)="handleOk()"
+    >
+      <ng-container *tdsModalContent>
+        <tds-select
+          placeholder="select IP"
+          [ngModel]="listRepeatOrRevokeScript"
+          [data]="listUsernameFilter"
+          [allowClear]="true"
+          (ngModelChange)="ngModelChangeIP($event)"
+          mode="multiple"
+        >
+        </tds-select>
+      </ng-container>
+    </tds-modal> -->
+    <!-- <app-tproxy-button
+      [text]="'Stop All Script Default'"
+      [color]="'error'"
+      [icon]="'tdsi-stop-line'"
+      style="float: right"
+      (click)="showModal(false)"
+    ></app-tproxy-button> -->
+    <!-- <app-tproxy-button
+    *ngIf ="!isShowProfile"
+    [text]="'View Profile'"
+    [color]="'info'"
+    [icon]="'tdsi-section-fill'"
+    (click) = "ViewProfile()"
+    class ="ml-2"
+  ></app-tproxy-button> -->
+    <!-- <app-tproxy-button
+      *ngIf="isShowProfile"
+      [text]="'UnShow Profile'"
+      [color]="'info'"
+      [icon]="'tdsi-section-fill'"
+      (click)="ViewProfile()"
+      class="ml-2"
+    ></app-tproxy-button> -->
+  </div>
+  <div
+    style="
+      margin-top: 10px;
+      margin-left: 5px;
+      overflow-y: auto;
+      padding: 1rem;
+      border: solid 1px #e5e5e5;
+      height: 73.5vh;
+    "
+    class="tableContainer"
+  >
+    <tds-table
+      #basicTable
+      [listData]="listProxyUsingScript?.items"
+      [(pageSize)]="pageSize"
+      [(pageIndex)]="pageIndex"
+      [frontPagination]="false"
+      (queryParams)="onQueryParamsChange($event)"
+      [total]="listProxyUsingScript?.totalCount"
+    >
+      <thead>
+        <tr style="height: 5vh; background-color: #e5e5e5">
+          <th class="pl-2">Id Tài khoản</th>
+          <th>Tên Facebook</th>
+          <th>Tên kịch bản</th>
+          <th>Loại kịch bản</th>
+          <!-- <th>Giá trị</th> -->
+          <th>Hoạt động</th>
+          <th *ngIf="isShowProfile">Hồ sơ</th>
+          <th>Thời gian bắt đầu</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="basicTable.data">
+          <tr class="tableClientUsingScript" style="height: 5vh">
+            <td class="pl-2">{{ data.username }}</td>
+            <td>{{ data.nameFacebook }}</td>
+            <td>
+              <div class="flex items-center">
+                <div *ngIf="data.errorDetail != null && data.errorDetail != ''">
+                  <tds-tag
+                    tds-tooltip
+                    tooltipTitle="{{ data.errorDetail }}"
+                    status="error"
+                    >Lỗi</tds-tag
+                  >
+                </div>
+                <div
+                  class="ml-1"
+                  tds-tooltip
+                  tooltipTitle="{{ data.scriptName }}"
+                >
+                  {{ data.scriptName | nameScript }}
+                </div>
+              </div>
+            </td>
+            <td>{{ data.typeName }}</td>
+            <!-- <td>
+               <div *ngIf="data.value.length > 50 && data.typeName != 'CloseChrome'">
+                <tds-button-group>
+                  <button tds-button color="secondary" tds-dropdown trigger="click" [tdsDropdownMenu]="menu" [placement]="'topCenter'">
+                      <span class="flex items-center">
+                          Xem
+                      </span>
+                  </button>
+                  <tds-dropdown-menu #menu="tdsDropdownMenu">
+                    <div  style ="max-width:500px; word-break: break-all;">
+                      <div *ngIf="checkTypeScript(data.typeName) == 'Reacts'">
+                        <a class ="hrefHover" href="{{checkContent(data.value|formatLogUrl)}}" target="_blank" > {{data.value|formatLogUrl}} - </a>
+                        <span>{{data.value|supportContent}} - </span>
+                        <span>{{data.value|formatURL}} </span>
+                      </div>
+                      <div *ngIf="checkTypeScript(data.typeName) == 'Different'">
+                        <a class ="hrefHover" href="{{checkContent(data.value|formatLogUrl)}}" target="_blank" > {{data.value|formatLogUrl}} - </a>
+                        <span>{{data.value|supportContent}} </span>
+                      </div>
+                      <div *ngIf="checkTypeScript(data.typeName) == 'Default'">
+                        {{ data.value| formatString }}
+                      </div>
+                    </div>
+                  </tds-dropdown-menu>
+                  </tds-button-group>
+              </div>
+              <div *ngIf="data.value.length <= 50 && data.typeName != 'CloseChrome'">
+                <div *ngIf="checkTypeScript(data.typeName) == 'Reacts'">
+                  <a class ="hrefHover" href="{{checkContent(data.value|formatLogUrl)}}" target="_blank" > {{data.value|formatLogUrl}} - </a>
+                  <span>{{data.value|supportContent}} - </span>
+                  <span>{{data.value|formatURL}} </span>
+                </div>
+                <div *ngIf="checkTypeScript(data.typeName) == 'Different'">
+                  <a class ="hrefHover" href="{{checkContent(data.value|formatLogUrl)}}" target="_blank" > {{data.value|formatLogUrl}} - </a>
+                  <span>{{data.value|supportContent}} </span>
+                </div>
+                <div *ngIf="checkTypeScript(data.typeName) == 'Default'">
+                  {{ data.value| formatString }}
+                </div>
+              </div>
+              <div *ngIf="data.typeName== 'CloseChrome'">
+                _
+              </div>
+            </td> -->
+            <td>
+              <i
+                *ngIf="data.isActive"
+                style="color: rgb(5, 201, 5)"
+                class="tdsi-radio-circle-fill"
+              ></i>
+              <i
+                *ngIf="!data.isActive"
+                style="color: red"
+                class="tdsi-radio-circle-fill"
+              ></i>
+            </td>
+            <td *ngIf="isShowProfile && data.isActive">None</td>
+            <td *ngIf="isShowProfile && !data.isActive">
+              <div *ngFor="let item of data.profileClient">
+                <p>{{ item }}</p>
+              </div>
+            </td>
+            <td>{{ data.creationTime | date: "medium" }}</td>
+            <td>
+              <button
+                (click)="deleteProxyUS(data)"
+                tds-button
+                color="error"
+                class="text-xl text-primary-1 ml-2"
+              >
+                <span class="flex items-center">
+                  <i class="tdsi-trash-line text-lg leading-none"></i>
+                </span>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </tds-table>
+  </div>
+</div>
+<div>
+  <app-loading [InfoLoading]="InfoLoading"> </app-loading>
+</div>

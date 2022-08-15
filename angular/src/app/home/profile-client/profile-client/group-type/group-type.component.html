@@ -1,0 +1,148 @@
+<div class="flex items-center">
+  <div>
+    <tds-form-field>
+      <input
+        [(ngModel)]="filterNameGroup"
+        (ngModelChange)="filterChange($event)"
+        tdsInput
+        placeholder="Nhập tên nhóm"
+        size="md"
+      />
+    </tds-form-field>
+  </div>
+  <div>
+    <app-tproxy-button
+      [text]="'Thêm loại nhóm'"
+      [color]="'primary'"
+      [icon]="'tdsi-icon-line'"
+      class="ml-2"
+      (click)="showModalGroupType()"
+    ></app-tproxy-button>
+  </div>
+</div>
+<div
+  style="
+    margin-top: 10px;
+    margin-left: 5px;
+    max-height: 80.5vh;
+    overflow-y: auto;
+    padding: 1rem;
+    border: solid 1px #e5e5e5;
+  "
+  class="tableContainer"
+>
+  <tds-table #basicTable [listData]="listGroupType" [frontPagination]="false">
+    <thead>
+      <tr style="height: 5vh; text-align: center; background-color: #e5e5e5">
+        <th>Tên loại nhóm</th>
+        <th>Từ khóa liên quan</th>
+        <th>Hoạt động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-template ngFor let-data [ngForOf]="basicTable.data">
+        <tr class="tableProxy" style="height: 4vh; text-align: center">
+          <td>{{ data.name }}</td>
+          <td>
+            {{ data.keywordsRelative }}
+          </td>
+          <td>
+            <button
+              (click)="deleteGroupType(data.id)"
+              tds-button
+              color="error"
+              class="text-xl text-primary-1 ml-2"
+            >
+              <span class="flex items-center">
+                <i class="tdsi-trash-line text-lg leading-none"></i>
+              </span>
+            </button>
+            <button
+              (click)="showModalUpdateGroupType(data)"
+              class="ml-2"
+              tds-button-icon
+              color="info"
+            >
+              <span class="flex items-center">
+                <i class="tdsi-edit-2-fill"></i>
+              </span>
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </tbody>
+  </tds-table>
+</div>
+<tds-modal
+[(visible)]="isVisibleGroupType"
+title="Thêm loại nhóm"
+(onCancel)="handleCancelGroupType()"
+(onOk)="handleOkGroupType()"
+>
+<ng-container *tdsModalContent>
+  <tds-form-field>
+    <tds-label>Tên loại nhóm</tds-label>
+    <input
+      tdsInput
+      autocomplete="off"
+      placeholder="Nhập tên nhóm"
+      [formControl]="nameGroupType"
+      [required]="true"
+      allowClear="true"
+    />
+  </tds-form-field>
+  <tds-error *ngIf="nameGroupType.invalid"
+    >Bạn chưa điền tên nhóm</tds-error
+  >
+  <tds-form-field>
+    <tds-label>Từ khóa</tds-label>
+    <tds-select
+      valueField="id"
+      textField="name"
+      [(ngModel)]="listSelected"
+      placeholder="select item"
+      [data]="listData"
+      mode="tags"
+      [maxTagCount]="5"
+    >
+    </tds-select>
+  </tds-form-field>
+  <tds-error *ngIf="listSelected.length == 0">
+    Vui lòng chọn 1 từ khóa</tds-error
+  >
+</ng-container>
+</tds-modal>
+<tds-modal
+  [(visible)]="isVisibleUpdateGroupType"
+  title="Chỉnh sửa loại nhóm"
+  (onCancel)="handleCancelUpdateGroupType()"
+  (onOk)="handleOkUpdateGroupType()"
+>
+  <ng-container *tdsModalContent>
+    <tds-form-field>
+      <tds-label>Tên loại nhóm</tds-label>
+      <input
+        tdsInput
+        autocomplete="off"
+        placeholder="Nhập tên nhóm"
+        [(ngModel)]="nameUpdate"
+        [required]="true"
+        allowClear="true"
+      />
+    </tds-form-field>
+    <tds-error *ngIf="nameUpdate == ''">Vui lòng không để trống</tds-error>
+    <tds-form-field>
+      <tds-label>Từ khóa</tds-label>
+      <tds-select
+        [(ngModel)]="listSelectedUpdate"
+        placeholder="select item"
+        mode="tags"
+        [maxTagCount]="5"
+      >
+      </tds-select>
+    </tds-form-field>
+    <tds-error *ngIf="listSelectedUpdate.length == 0">
+      Vui lòng chọn 1 từ khóa</tds-error
+    >
+  </ng-container>
+</tds-modal>

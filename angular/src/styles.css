@@ -1,0 +1,7 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "./assets/scss/cdk.scss";
+@import "./assets/scss/scroll.scss";
+@import "./assets/scss/table.scss";
+@import "./assets/font-icon/style.css";

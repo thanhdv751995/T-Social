@@ -1,0 +1,71 @@
+
+<tds-table #table [listData]="listSeeding" tableLayout="fixed">
+    <thead>
+        <tr style="height: 4vh; text-align: center; background-color: #e5e5e5">
+            <th width=15%>Tên chiến dịch</th>
+            <th width=15%>Hành động</th>
+            <th>Đường dẫn</th>
+            <th width=15%>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let data of table.data">
+            <tr class="tableProfile">
+                <td tooltipTitle= {{data.infoSeeding|formatNameCampaign}}  tooltipPlacement="top"  tds-tooltip>{{data.infoSeeding |formatNameCampaign|nameSeeding}}</td>
+                <td>{{data.typeSeeding}}</td>
+                <td>
+                    <div [ngSwitch]="data.typeSeeding">
+                        <div *ngSwitchCase="'SharePost'">
+                          <span>Chia sẻ bài viết lên tường với nội dung </span>
+                          <span class="content">{{data.value | supportContent}}</span>
+                          <span> có đường dẫn </span>
+                          <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">tại đây</a>
+                          <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">tại đây</a>
+                        </div>
+                        <div *ngSwitchCase="'CommentPost'">
+                          <span>Bình luận </span>
+                          <span class="content">{{data.value | supportContent}}</span>
+                          <span> vào bài viết có đường dẫn </span>
+                          <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">tại đây</a>
+                          <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">tại đây</a>
+                        </div>
+                        <div *ngSwitchCase="'ReactionPost'">
+                          <span>Bày tỏ cảm xúc </span>
+                          <span class="content">{{data.value | formatURL}}</span>
+                          <span> vào bài viết có đường dẫn </span>
+                          <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">tại đây</a>
+                          <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">tại đây</a>
+                        </div>
+                        <div *ngSwitchCase="'PostStatus'">
+                          <span>Đăng bài viết vào trang cá nhân với nội dung </span>
+                          <span>{{data.value | formatLogUrl}}</span> <span> và </span>
+                          <a *ngIf="(data.value|supportContent) != null" class="link" href="{{data.value|supportContent}}" target="_blank"> hình ảnh </a>
+                          <span  *ngIf="(data.value|supportContent) == null">không có hình ảnh</span>
+                        </div>
+                        <div *ngSwitchCase="'PostGroup'">
+                          <span>Đăng bài viết vào </span>
+                          <a class="link" href="{{data.value | formatLogUrl}}" target="_blank">nhóm</a>
+                          <span> với nội dung </span> <span>{{data.value |supportContent}}</span> <span> và </span>
+                          <a *ngIf="(data.value|formatURL) != null" class="link" href="{{data.value|formatURL}}" target="_blank"> hình ảnh </a>
+                          <span  *ngIf="(data.value|formatURL) == null">không có hình ảnh</span>
+                          <!-- <span>{{data.value | formatURL}}</span> <span> và </span>
+                          <a *ngIf="(data.value|supportContent) != null" class="link" href="{{data.value|supportContent}}" target="_blank"> hình ảnh </a>
+                          <span  *ngIf="(data.value|supportContent) == null">không có hình ảnh</span> -->
+                        </div>
+                        <div *ngSwitchCase="'SharePostToGroup'">
+                          <span>Chia sẻ </span>
+                          <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">bài viết</a>
+                          <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">bài viết</a>
+                          <span> vào nhóm </span>
+                          <span class="content">{{data.value | supportContent}}</span>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <span *ngIf="data.statusSeeding">Đã xử lý</span>
+                    <span *ngIf="!data.statusSeeding">Chưa xử lý</span>
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</tds-table>

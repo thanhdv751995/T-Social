@@ -1,0 +1,31 @@
+.header{
+    text-align: center;
+    color: red;
+}
+.body{
+margin-top: 20px;
+}
+.col1{
+    width: 5%;
+}
+.col2{
+    word-wrap: break-word;
+}
+.col3{
+    word-wrap: break-word;
+}
+.col4{
+    word-wrap: break-word;
+}
+.link:visited {
+    color: green;
+  }
+  .link:link {
+    color: rgb(82, 82, 245)
+  }
+  .link:hover {
+    color: blue;
+  }
+  .link{
+    text-decoration: underline
+  }

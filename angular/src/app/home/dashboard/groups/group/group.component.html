@@ -1,0 +1,44 @@
+<div class="header">
+    <h3>Danh sách Nhóm</h3>
+</div>
+<div class="body">
+    <div class="table">
+        <tds-table 
+        #expandTable [listData]="listGroup" 
+        tableLayout="fixed"
+        [(pageSize)]="pageSize"
+        [(pageIndex)]="pageIndex"
+        [frontPagination]="false"
+        (queryParams) = "onQueryParamsChange($event)"
+        [total]="totalTable"
+        >
+            <thead>
+                <tr>
+                    <!-- <th class="col1">Avatar</th> -->
+                    <th width="20%">Tên nhóm</th>
+                    <th width="40%">Link Group</th>
+                    <th >Thông tin Group</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let data of expandTable.data">
+                    <tr>
+                        <!-- <td class="col1"> 
+                            <tds-avatar class="bg-accent-4  text-white" size="lg" tdsSrc="{{data.avatarGroup}}">
+                            </tds-avatar>
+                        </td> -->
+                        <td class="col2">
+                            {{ data.groupName }}
+                        </td>
+                        <td class="col3">
+                            <a class="link" href="{{ data.groupURL }}" target="_blank">{{ data.groupURL }}</a>
+                        </td>
+                        <td class="col4">{{data.content}}</td>
+
+                    </tr>
+
+                </ng-container>
+            </tbody>
+        </tds-table>
+    </div>
+</div>

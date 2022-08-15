@@ -1,0 +1,19 @@
+.note{
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+    color: cadetblue;
+    font-style: oblique;
+    font-size: unset;
+  }
+  .link:visited {
+    color: green;
+  }
+  .link:link {
+    color: rgb(82, 82, 245)
+  }
+  .link:hover {
+    color: blue;
+  }
+  .link{
+    text-decoration: underline
+  }

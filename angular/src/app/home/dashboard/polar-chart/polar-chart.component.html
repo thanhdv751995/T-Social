@@ -1,0 +1,25 @@
+<div class="flex items-start">
+    <div class="tableInfo">
+            <table class="w-full h-full">
+                <thead>
+                    <tr style="height: 5vh; text-align: center; background-color: #e5e5e5">
+                        <th style="width:50%; border-right:solid 1px #c7c7c7">Thành phần</th>
+                        <th>Tổng số</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let item of ingredientList" >
+                    <tr style="height: 4vh; text-align: center; border-bottom: solid 1px #e5e5e5;">
+                        <td style="border-right:solid 1px #c7c7c7"> {{item.ingredient}}</td>
+                        <td>{{item.total}}</td>
+                    </tr>
+                </tbody>
+            </table>
+    </div>
+    <div style = "width:3%">
+    </div>
+    <div style = "width:47%; padding:0% 1% 1% 1%">
+        <tds-range-picker style="width: 50%"[(ngModel)]="rangeDate" (ngModelChange)="onChange($event)">
+        </tds-range-picker>
+        <canvas  #barCanvas></canvas>
+    </div>
+</div>

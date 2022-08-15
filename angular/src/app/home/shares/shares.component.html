@@ -1,0 +1,57 @@
+<div class="flex p-4 h-full">
+    <div class="account w-1/5 h-full" >
+        <div style="text-align: center;">
+            <span>Danh sách account</span>
+        </div>
+        <div *ngFor = "let item of listAccount?.items">
+            <div class="flex mt-1">
+                <tds-checkbox></tds-checkbox>
+                <img class="imageProfile" src="{{item.avatarUrl}}" alt="">
+                <span>{{item.nameFacebook}}</span>
+                <app-tproxy-button                 
+                [text]="'ShowStatus'"
+                [color]="'primary'"
+                (click)='getListStatusByClientId(item.accessToken)'>
+            </app-tproxy-button>
+            </div>
+
+        </div>
+    </div>
+    <div class="w-4/5 h-full">
+        <div class="flex">
+            <div  style =" width :100%">
+              <tds-form-field>
+                <input appAutoFocus tdsInput placeholder="URL bài viết" size="sm" />
+              </tds-form-field>
+            </div>
+            <div>
+              <app-tproxy-button
+                [text]="'Submit'"
+                [color]="'primary'"
+                [icon]="'tdsi-click-fill'"
+                class="ml-3"
+              ></app-tproxy-button>
+            </div>
+          </div>
+          <div>
+              <tds-table templateMode>
+                  <thead>
+                      <tr>
+                          <th>Story</th>
+                          <th>Time</th>
+                          <th>Link Post</th>
+                      </tr>
+                  </thead>
+                  <tbody *ngFor ="let item of listStatusByClientId">
+                      <tr >
+                          <td>{{item?.story}}</td>
+                          <td>{{item?.created_time}}</td>
+                          <td>{{item?.id}}</td>
+                      </tr>
+                  </tbody>
+              </tds-table>
+          </div>
+    </div>
+   
+    
+</div>

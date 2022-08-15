@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>ActiviteChart</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ActiviteChart.Application.Contracts\ActiviteChart.Application.Contracts.csproj" />
+    <ProjectReference Include="..\ActiviteChart.Application\ActiviteChart.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Volo.Abp.Identity.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.TenantManagement.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.HttpApi" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.HttpApi" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,160 @@
+
+.top-script{
+  display: flex;
+  justify-content: flex-start;
+}
+.table-account{
+  margin-top: 2vh;
+  height: 70vh;
+}
+.table-script{
+  margin-top: 2vh;
+  height: 70vh;
+}
+.btn-submit{
+  margin-top: 3vh;
+  margin-left: 1vw;
+}
+.select-scriptFirst{
+  margin-top: 3vh;
+ // box-shadow: 1px 1px 1px;
+}
+.select-script{
+  margin-left: 0.5vw;
+  margin-top: 3vh;
+ // box-shadow: 1px 1px 1px;
+}
+.top-account{
+  display: flex;
+}
+.inputScripts {
+  padding-left: 1%;
+  margin-left: 1%;
+  border: solid 1px #e5e5e5;
+}
+.inputTick {
+  border: solid 1px #e5e5e5;
+  text-align: center;
+  width: 15%;
+  margin-left: 1%;
+}
+.head{
+  display: flex;
+}
+.listacc {
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1%;
+  background: rgb(45 196 241);
+  align-items: center;
+  color: white;
+  width: 40%;
+  margin: 1%;
+}
+.listSCript{
+  height: 5vh;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1%;
+  background: rgb(45 196 241);
+  align-items: center;
+  color: white;
+  width: 60%;
+  margin: 1%;
+}
+html, body { height: 100%; }
+
+body {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+// Here is where the magic happens
+
+$offset: 187;
+$duration: 1.4s;
+
+.spinner {
+  animation: rotator $duration linear infinite;
+}
+
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+
+.path {
+  stroke-dasharray: $offset;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation:
+    dash $duration ease-in-out infinite, 
+    colors ($duration*4) ease-in-out infinite;
+}
+
+@keyframes colors {
+  0% { stroke: #4285F4; }
+  25% { stroke: #DE3E35; }
+  50% { stroke: #F7C223; }
+  75% { stroke: #1B9A59; }
+  100% { stroke: #4285F4; }
+}
+
+@keyframes dash {
+ 0% { stroke-dashoffset: $offset; }
+ 50% {
+   stroke-dashoffset: $offset/4;
+   transform:rotate(135deg);
+ }
+ 100% {
+   stroke-dashoffset: $offset;
+   transform:rotate(450deg);
+ }
+}
+.loading{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.loadingInfo{
+  opacity: 0.4;
+}
+.tableIsactive{
+  box-shadow: 1px 1px 3px;
+   height:82vh; 
+   overflow-y: auto;
+}
+.tableIsactive::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.tableIsactive::-webkit-scrollbar {
+  width: 5px;
+  background-color: #d5ecf7;
+  border-radius: 5px;
+}
+
+.tableIsactive::-webkit-scrollbar-thumb {
+  background-color: rgb(45 196 241);
+  border-radius: 5px;
+}
+.divAction::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.divAction::-webkit-scrollbar {
+  width: 5px;
+  background-color: #d5ecf7;
+  border-radius: 5px;
+}
+
+.divAction::-webkit-scrollbar-thumb {
+  background-color: rgb(45 196 241);
+  border-radius: 5px;
+}

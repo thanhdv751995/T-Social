@@ -1,0 +1,43 @@
+.container-fluid {
+  margin: 10px;
+}
+.container-log {
+  max-height: 82vh;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+.log {
+  word-break: break-word;
+}
+.container-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ccc;
+}
+.input {
+  margin-right: 5px;
+}
+.container-log {
+  word-break: break-word;
+  max-width: 1700px;
+  overflow-x: hidden;
+}
+.container-log::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
+  border-radius: 5px;
+}
+
+.container-log::-webkit-scrollbar {
+  width: 10px;
+  background-color: #d5ecf7;
+  border-radius: 5px;
+}
+
+.container-log::-webkit-scrollbar-thumb {
+  background-color: #ff9059;
+  border-radius: 5px;
+}

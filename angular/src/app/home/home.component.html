@@ -1,0 +1,69 @@
+<div style="border-bottom:solid 1px #e5e5e5">
+  <tds-header routerLink="/dashboard" style="height: 6vh" urlLogoText='assets/image/LogoTsocial.svg'  urlLogo='assets/image/LogoTsocial.svg'>
+  <div class=" inline-flex tds-header-toolbar-right items-center">
+    <app-tproxy-button
+      [text]="'New Chrome Profile'"
+      [color]="'primary'"
+      [icon]="icon"
+      (click)="newProfileChrome()"
+      class="mr-2"
+    ></app-tproxy-button>
+    <button tds-flat-button-icon size="md" class="bg-primary-1 text-white">
+      <span class="flex items-center">
+        <i class="tdsi-bell-line text-xl leading-5"></i>
+      </span>
+    </button>
+    <div class="inline-flex pl-4">
+      <tds-avatar
+        class="cursor-pointer"
+        tds-dropdown
+        [tdsDropdownMenu]="dropdownAvatar"
+        trigger="click"
+        [tdsSrc]="infoUser?.avatarUrl"
+      >
+      </tds-avatar>
+      <tds-dropdown-menu #dropdownAvatar="tdsDropdownMenu">
+        <div class="w-56">
+          <div tds-dropdown-item>
+            <div class="flex w-full">
+              <tds-avatar
+                [shape]="'square'"
+                [tdsSrc]="infoUser?.avatarUrl"
+              >
+              </tds-avatar>
+              <div
+                class="flex flex-auto flex-col ml-2"
+                routerLink="/profile"
+              >
+                <div class="text-body-2 font-semibold">
+                  {{ infoUser?.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div tds-dropdown-item>Change Password</div> -->
+          <div tds-dropdown-item (click)="logOut()">
+            <a class="text-error-500">Log Out</a>
+          </div>
+        </div>
+      </tds-dropdown-menu>
+    </div>
+  </div>
+
+  </tds-header>
+</div>
+<div class="flex">
+  <div [style.width.%]="!isCollapsed ? 15 : 3.4" style="height: 94vh; border-right:solid 1px #e5e5e5">
+    <tds-menu
+      [data]="lstMenu"
+      [inlineCollapsed]="isCollapsed"
+      [showLogo]="false"
+      (onOpenChange)="onOpenChange($event)"
+      [mode] = "'light'"
+    >
+    </tds-menu>
+  </div>
+  <div style="height:94vh; overflow-y: auto" [ngClass]="{'with-85':!isCollapsed,'with-96-6':isCollapsed}">
+      <router-outlet ></router-outlet>
+  </div>
+</div>

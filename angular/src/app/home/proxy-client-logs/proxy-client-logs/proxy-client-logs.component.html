@@ -1,0 +1,73 @@
+<div class="container-fluid">
+  <div class="container-input">
+    <div class="input">
+      <tds-date-picker
+        [(ngModel)]="date"
+        (ngModelChange)="onDateChange($event)"
+      >
+      </tds-date-picker>
+    </div>
+    <div class="input">
+      <tds-tag status="info" type="outline" rounded="rounded-full">{{
+        proxyClientLogs?.length
+      }}</tds-tag>
+    </div>
+    <div class="input">
+      <button tds-button color="info" [size]="'sm'" (click)="today()">
+        <i></i>Today
+      </button>
+    </div>
+  </div>
+  <div *ngIf="isLoading && proxyClientLogs?.length == 0; else loadDone">
+    <tds-spin
+      [color]="'secondary'"
+      class="mr-1 h-8 w-8"
+      style="margin: 20% 0 0 45%"
+      tip="Loading..."
+    >
+    </tds-spin>
+  </div>
+  <ng-template #loadDone>
+    <div class="container-log">
+      <div *ngFor="let log of proxyClientLogs" class="log">
+        <label style="font-weight: 500"
+          >[{{ log.creationTime | date: "medium" }}]</label
+        >
+        {{ log.body }}
+      </div>
+    </div>
+    <div style="margin-top: 10px" *ngIf="proxyClientLogs.length > 0">
+      <tds-spinner
+        [color]="'secondary'"
+        class="mr-10 mt-1 w-5 h-5"
+        style="float: right; margin-left: 5px"
+        tip="Loading..."
+        *ngIf="isLoading; else doneLoadMore"
+      ></tds-spinner>
+      <ng-template #doneLoadMore>
+        <button
+          tds-button
+          color="primary"
+          size="sm"
+          style="float: right; margin-left: 5px"
+          (click)="getListProxyClientLogs(iP, date)"
+        >
+          <span class="flex items-center">
+            <i
+              class="tdsi-download-fill text-xl leading-none text-neutral-1-500 mr-2"
+            ></i
+            >Load More
+          </span>
+        </button>
+      </ng-template>
+      <tds-form-field style="float: right">
+        <input
+          tdsInput
+          [ngModel]="take"
+          size="sm"
+          (ngModelChange)="takeChange($event)"
+        />
+      </tds-form-field>
+    </div>
+  </ng-template>
+</div>

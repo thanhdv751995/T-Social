@@ -1,0 +1,64 @@
+<div [ngClass]="{ loadingInfo: InfoLoading }">
+  <div class="m-4 flex items-center">
+    <tds-range-picker
+      style="width: 30%"
+      [(ngModel)]="rangeDate"
+      (ngModelChange)="onChange($event)"
+    >
+    </tds-range-picker>
+    <tds-select
+      placeholder="Chọn chiến dịch"
+      [data]="listNameSeeding"
+      [allowClear]="true"
+      [ngModel]="nameSeeding"
+      class="ml-1"
+      style="width: 30%"
+      size="lg"
+      (ngModelChange)="ngModelChangeName($event)"
+    >
+    </tds-select>
+    
+    <span class="ml-2"> Tổng số : <tds-badge [standalone]="true" [count]="listHistory?.totalCount"></tds-badge> tác vụ</span>
+  </div>
+  <div class="ml-4" *ngFor="let item of listHistory?.items; let i = index">
+    <span>{{ i + 1 }}, </span>
+    <span>Ngày </span>
+    <span>{{ item.creationTime | date: "short" }} </span>
+    <span>Tài khoản </span>
+    <a
+      class="link"
+      href="http://facebook.com/{{ item.userName }}"
+      target="_blank"
+      >{{ item.nameFacebook }}</a
+    >
+    <span> đã </span>
+
+    <span *ngIf="item.scriptName.includes(':+')"
+      >{{ item.scriptName | formatHistory }}
+    </span>
+    <span *ngIf="!item.scriptName.includes(':+')">{{
+      item.content | formatTypeScript
+    }}</span>
+    <span> thành công với </span>
+
+    <a
+      *ngIf="!item.url.includes('facebook.com')"
+      class="link"
+      href="https://facebook.com/{{ item.url }}"
+      target="_blank"
+      >đường dẫn</a
+    >
+    <a
+      *ngIf="item.url.includes('facebook.com')"
+      class="link"
+      href="{{ item.url | formatLink }}"
+      target="_blank"
+      >đường dẫn</a
+    >
+    <br />
+    <br />
+  </div>
+</div>
+<div>
+  <app-loading [InfoLoading]="InfoLoading"> </app-loading>
+</div>

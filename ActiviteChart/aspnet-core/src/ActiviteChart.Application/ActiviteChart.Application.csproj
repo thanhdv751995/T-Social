@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>ActiviteChart</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ActiviteChart.Domain\ActiviteChart.Domain.csproj" />
+    <ProjectReference Include="..\ActiviteChart.Application.Contracts\ActiviteChart.Application.Contracts.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="1.8.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
+    <PackageReference Include="Volo.Abp.Identity.Application" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.PermissionManagement.Application" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.TenantManagement.Application" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.FeatureManagement.Application" Version="4.3.0" />
+    <PackageReference Include="Volo.Abp.SettingManagement.Application" Version="4.3.0" />
+  </ItemGroup>
+
+</Project>

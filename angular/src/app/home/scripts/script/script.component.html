@@ -1,0 +1,773 @@
+<div class="container-fluid" [ngClass]="{ loadingInfo: InfoLoading }">
+  <div class="containerCard">
+    <tds-card class="card">
+      <tds-card-content class="card-content total">
+        <div class="text-center">
+          <i class="tdsi-paper-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Tổng số kịch bản</div>
+          <div class="text-center">{{ listScript?.totalCount }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card">
+      <tds-card-content class="card-content active">
+        <div class="text-center">
+          <i class="tdsi-menu-1-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Số kịch bản mặc định</div>
+          <div class="text-center">{{ totalDefault }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card">
+      <tds-card-content class="card-content alive">
+        <div class="text-center">
+          <i class="tdsi-copy-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Số kịch bản mở rộng</div>
+          <div class="text-center">
+            {{ listScript?.totalCount - totalDefault }}
+          </div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+    <tds-card class="card disconnected">
+      <tds-card-content class="card-content">
+        <div class="text-center">
+          <i class="tdsi-wifi-fill text-4xl icon"></i>
+        </div>
+        <div style="color: white; font-weight: 500">
+          <div class="text-center">Số kịch bản đang hoạt động</div>
+          <div class="text-center">{{ totalActive }}</div>
+        </div>
+      </tds-card-content>
+    </tds-card>
+  </div>
+  <div
+    style="
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+      margin-left: 5px;
+      border-top: 1px solid #ccc;
+      padding-top: 10px;
+      overflow-y: auto;
+    "
+  >
+    <div class="flex items-center">
+      <tds-form-field>
+        <input
+        tdsInput
+        autocomplete="off"
+        placeholder="Nhập tên kịch bản"
+        [(ngModel)]="filter"
+        (ngModelChange)="ngModelChangeFilter($event)"
+      />
+      </tds-form-field>
+
+      <tds-select
+        style="width: 200px;margin-left: 0.5rem"
+        placeholder="Chọn kiểu kịch bản"
+        [ngModel]="this.typeFilter"
+        [data]="listEnumType"
+        [allowClear]="true"
+        (ngModelChange)="ngModelChangeType($event)"
+      >
+      </tds-select>
+      <tds-select
+        style="width: 200px; margin-left: 0.5rem"
+        placeholder="Chọn chiến dịch"
+        [(ngModel)]="nameSeeding"
+        [data]="listNameSeeding"
+        [allowClear]="true"
+        (ngModelChange)="ngModelChangeSeeding($event)"
+      >
+      </tds-select>
+    </div>
+
+    <app-tproxy-button
+      [text]="'Thêm mới'"
+      [color]="'primary'"
+      [icon]="'tdsi-add-fill'"
+      (click)="CreateScript()"
+      style="float: right"
+    ></app-tproxy-button>
+  </div>
+  <div style="
+      margin-top: 10px;
+      margin-left: 5px;
+      padding: 1rem;
+      border: solid 1px #e5e5e5;
+      height: 76vh;
+      overflow-y: auto;
+    "
+    class="tableContainer"
+  >
+    <tds-table
+      #basicTable
+      [listData]="listScript?.items"
+      [(pageSize)]="pageSize"
+      [(pageIndex)]="pageIndex"
+      [frontPagination]="false"
+      (queryParams)="onQueryParamsChange($event)"
+      [total]="totalCount"
+    >
+      <thead>
+        <tr style="height: 5vh;background-color: #e5e5e5;">
+          <th class="pl-4">Tên kịch bản</th>
+          <th>Phân loại kịch bản</th>
+          <th>Hoạt động</th>
+          <th>Tên loại kịch bản</th>
+          <th>Giá trị</th>
+          <th>Thời gian bắt đầu</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="basicTable.data">
+          <tr class="tableScript" style="height: 5vh;">
+            <td class="pl-4" tds-tooltip
+            tooltipTitle={{data.scriptName}}>{{ data.scriptName|nameScript}}</td>
+            <td *ngIf="data.isDefault" >
+              <tds-tag status='success'>Mặc định</tds-tag>
+            </td>
+            <td *ngIf="data.isSeeding" >
+              <tds-tag status='warning'>Chiến dịch</tds-tag>
+            </td>
+            <td *ngIf="!data.isDefault && !data.isSeeding">
+              <tds-tag status='info'>Cá nhân</tds-tag>
+            </td>
+            <!-- <td>
+              <i *ngIf="data.isDefault" style="color:rgb(5, 201, 5)" class="tdsi-radio-circle-fill"></i>
+              <i *ngIf="!data.isDefault" style="color: red;" class="tdsi-radio-circle-fill"></i>
+            </td> -->
+            <td>
+              <i
+                *ngIf="data.isActive"
+                style="color: rgb(5, 201, 5)"
+                class="tdsi-radio-circle-fill"
+              ></i>
+              <i
+                *ngIf="!data.isActive"
+                style="color: red"
+                class="tdsi-radio-circle-fill"
+              ></i>
+            </td>
+            <td>{{ data.typeName }}</td>
+            <td>
+              <div [ngSwitch]="data.typeName">
+                <div *ngSwitchCase="'SurfingNewsfeed'">
+                  <span>{{ data.value }} phút</span>
+                </div>
+                <div *ngSwitchCase="'SurfWatch'">
+                  <span>{{ data.value }} phút</span>
+                </div>
+                <div *ngSwitchCase="'SurfStories'">
+                  <span>{{ data.value }} phút</span>
+                </div>
+                <div *ngSwitchCase="'LikeNewsfeed'">
+                  <span>Bày tỏ cảm xúc </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> {{ data.value | formatLogUrl }} lần</span>
+                </div>
+                <div *ngSwitchCase="'LikeVideoWatch'">
+                  <span>Bày tỏ cảm xúc </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> {{ data.value | formatLogUrl }} lần</span>
+                </div>
+                <div *ngSwitchCase="'CommentPost'">
+                  <span>Bình luận </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> với </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'ReadMessage'">
+                  <span>{{ data.value }} lần</span>
+                </div>
+                <div *ngSwitchCase="'ReadNotifications'">
+                  <span>{{ data.value }} lần</span>
+                </div>
+                <div *ngSwitchCase="'AgreeToBeFriends'">
+                  <span>{{ data.value }} lần</span>
+                </div>
+                <div *ngSwitchCase="'TextingFriends'">
+                  <span
+                    >Nhắn tin {{ data.value | formatLogUrl }} người với nội dung
+                  </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                </div>
+                <div *ngSwitchCase="'MakeFriendsSuggestion'">
+                  <span
+                    >Gửi lời mời kết bạn {{ data.value | formatLogUrl }} người
+                    với nội dung
+                  </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                </div>
+                <div *ngSwitchCase="'JoinGroup'">
+                  <span
+                    >Tham gia {{ data.value | formatLogUrl }} nhóm với nội dung
+                  </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                </div>
+                <div *ngSwitchCase="'WatchLivestream'">
+                  <span
+                    >Xem LiveStream {{ data.value | supportContent }} lượt xem
+                  </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'ChangeAvatar'">
+                  <span>Đổi ảnh đại diện với </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'ReactionPost'">
+                  <span>Bày tỏ cảm xúc </span>
+                  <span class="content">{{ data.value | formatURL }}</span>
+                  <span> {{ data.value | supportContent }}</span
+                  ><span> lần với </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'PostStatus'">
+                  <span>Đăng status với nội dung </span>
+                  <span class="content">{{ data.value | formatLogUrl }}</span>
+                  <span *ngIf="(data.value | supportContent) != null">
+                    <span> và </span>
+                    <a
+                      class="link"
+                      *ngIf="!data.value.includes('https:')"
+                      href="https://facebook.com/{{
+                        data.value | supportContent
+                      }}"
+                      target="_blank"
+                      >hình ảnh</a
+                    >
+                    <a
+                      class="link"
+                      *ngIf="data.value.includes('https:')"
+                      href="{{ data.value | supportContent | formatLink }}"
+                      target="_blank"
+                      >hình ảnh</a
+                    >
+                  </span>
+                </div>
+                <div *ngSwitchCase="'SharePost'">
+                  <span>Chia sẻ bài viết với nội dung </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> và </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'MessageToPage'">
+                  <span>Gửi tin nhắn vào page với nội dung </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> và </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'MessageToFriend'">
+                  <span>Gửi tin nhắn cho bạn </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> và </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'SharePostToGroup'">
+                  <span>Chia sẻ bài viết vô nhóm </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> và </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >đường dẫn</a
+                  >
+                </div>
+                <div *ngSwitchCase="'PostGroup'">
+                  <span>Đăng status vô </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatLogUrl }}"
+                    target="_blank"
+                    >nhóm</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLogUrl | formatLink }}"
+                    target="_blank"
+                    >nhóm</a
+                  >
+                  <span> với nội dung </span>
+                  <span class="content">{{ data.value | supportContent }}</span>
+                  <span> và </span>
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value | formatURL }}"
+                    target="_blank"
+                    >hình ảnh</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatURL | formatLink }}"
+                    target="_blank"
+                    >hình ảnh</a
+                  >
+                </div>
+                <div *ngSwitchCase="'JoinGroupWithURL'">
+                  <a
+                    class="link"
+                    *ngIf="!data.value.includes('facebook.com')"
+                    href="https://facebook.com/{{ data.value }}"
+                    target="_blank"
+                    >đường dẫn nhóm</a
+                  >
+                  <a
+                    class="link"
+                    *ngIf="data.value.includes('facebook.com')"
+                    href="{{ data.value | formatLink }}"
+                    target="_blank"
+                    >đường dẫn nhóm</a
+                  >
+                </div>
+                <div *ngSwitchCase="'CloseChrome'">
+                  <span>_</span>
+                </div>
+                <div *ngSwitchDefault>
+                  <span>{{ data.value }}</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              {{ data.creationTime | date: "medium" }}
+            </td>
+            <td>
+              <!-- <app-tproxy-button [text]="'Xóa'" [color]="'error'" [icon]="'tdsi-backspace-line'"
+                (click)="deleteScript(data)"></app-tproxy-button> -->
+              <button
+                (click)="deleteScript(data)"
+                class="ml-1"
+                tds-button-icon
+                color="error"
+              >
+                <span class="flex items-center">
+                  <i class="tdsi-backspace-line"></i>
+                </span>
+              </button>
+                <button  [disabled]="data.isSeeding || data.typeName=='CloseChrome'" (click)="showModalUpdateProfile(data.id)" class="ml-1" tds-button-icon color="info">
+                  <span class="flex items-center">
+                      <i class="tdsi-edit-2-fill"></i>
+                  </span>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </tds-table>
+
+    <tds-modal
+      [(visible)]="isVisible"
+      title="Các tài khoản đang chạy"
+      (onCancel)="handleCancelAcc()"
+      (onOk)="handleOkAcc()"
+    >
+      <ng-container *tdsModalContent>
+        <tds-table #tdsTable [listData]="listAccountRun" tableLayout="fixed">
+          <thead>
+            <tr style="text-align: center">
+              <th>ProxyIp</th>
+              <th>Tên tài khoản</th>
+              <th>Trực tuyến</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="text-align: center" *ngFor="let data of tdsTable.data">
+              <td>{{ data.proxyIp }}</td>
+              <td>{{ data.nameFacebook }}</td>
+              <td>
+                <i
+                  *ngIf="data.online"
+                  style="color: rgb(5, 201, 5)"
+                  class="tdsi-radio-circle-fill"
+                ></i>
+                <i
+                  *ngIf="!data.online"
+                  style="color: red"
+                  class="tdsi-radio-circle-fill"
+                ></i>
+              </td>
+            </tr>
+          </tbody>
+        </tds-table>
+      </ng-container>
+    </tds-modal>
+  </div>
+</div>
+<div>
+  <app-loading [InfoLoading]="InfoLoading"> </app-loading>
+</div>
+<tds-modal size="lg" [(visible)]="isVisibleModalCreateScript" title="Tạo kịch bản" (onCancel)="handleCancel()"
+    (onOk)="handleOk()">
+    <ng-container *tdsModalContent>
+      <tds-label class="mb-2">Loại kịch bản</tds-label>
+      <div class="form-addScript">
+        <div class="type-add">
+            <div style="height: 400px; overflow-y: auto;">
+              <div [ngClass]="{ isActive: active == data }" (click)="changeColor(data)" class="list-Type flex justify-center" *ngFor="let data of listEnumType">
+                <div  class="type-script">
+                  <div  >{{data}}</div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="body-add" *ngIf="dataCreateForm.type == 'Undefined'">
+          <div style="text-align: center ; color: rgb(27 118 145);">
+            <h2>Vui lòng chọn type kịch bản</h2>
+            </div>
+        </div>
+        <div class="body-add" *ngIf="dataCreateForm.type != 'Undefined'">
+          <div >
+            <tds-form-field>
+              <tds-label>Script Name</tds-label>
+              <input tdsInput size="sm" [(ngModel)]="dataCreateForm.scriptName" [required]="true" autofocus />
+              <tds-error *ngIf="dataCreateForm.scriptName == ''">{{
+                getErrorMessage(dataCreateForm.scriptName)
+                }}</tds-error>
+            </tds-form-field>
+          </div>
+          <div>
+            <tds-form-field *ngIf="
+                dataCreateForm.type == 'CommentPost' ||
+                dataCreateForm.type == 'WatchLivestream' ||
+                dataCreateForm.type == 'SharePost' ||
+                dataCreateForm.type == 'JoinGroupWithURL' ||
+                dataCreateForm.type == 'MessageToPage' ||
+                dataCreateForm.type == 'MessageToFriend' ||
+                dataCreateForm.type == 'PostStatus' ||
+                dataCreateForm.type == 'PostGroup'||
+                dataCreateForm.type == 'ReactionPost'||
+                dataCreateForm.type == 'SharePostToGroup'
+              ">
+              <tds-label>URL</tds-label>
+              <input tdsInput size="md" [(ngModel)]="dataValue.url" />
+            </tds-form-field>
+            <tds-form-field *ngIf="
+                dataCreateForm.type == 'SurfingNewsfeed' ||
+                dataCreateForm.type == 'SurfWatch' ||
+                dataCreateForm.type == 'SurfStories'
+              ">
+              <tds-label>Time</tds-label>
+              <!-- <input
+                tdsInput
+                size="md"
+                (ngModelChange)="isNumber($event)"
+                [(ngModel)]="dataValue.time"
+              /> -->
+              <tds-input-number [(ngModel)]="dataValue.time" [min]="1" [max]="60" [step]="1"
+                (ngModelChange)="onChange($event)">
+              </tds-input-number>
+            </tds-form-field>
+            <tds-form-field *ngIf="
+                dataCreateForm.type == 'LikeNewsfeed' ||
+                dataCreateForm.type == 'ReadNotifications' ||
+                dataCreateForm.type == 'AgreeToBeFriends' ||
+                dataCreateForm.type == 'LikeVideoWatch' ||
+                dataCreateForm.type == 'TextingFriends' ||
+                dataCreateForm.type == 'MakeFriendsSuggestion' ||
+                dataCreateForm.type == 'JoinGroup' ||
+                dataCreateForm.type == 'ReadMessage'||
+                dataCreateForm.type == 'ReactionPost'||
+                dataCreateForm.type == 'WatchLivestream'
+              ">
+              <tds-label>Times</tds-label>
+              <tds-select placeholder="select times" [required]="true" [data]="times" [allowClear]="true"
+                [(ngModel)]="dataValue.times" (ngModelChange)="changeTimes($event)">
+              </tds-select>
+              <!-- <input tdsInput size="md" [(ngModel)]="dataValue.times" /> -->
+            </tds-form-field>
+            <!--<tds-form-field *ngIf="dataCreateForm.type == 'PostStatus'">
+              <tds-label>Status Type</tds-label>
+              <tds-select
+                placeholder="Select status type"
+                [required]="true"
+                [data]="listStatusType"
+                [allowClear]="true"
+                [(ngModel)]="dataValue.statusType"
+                (ngModelChange)="changeStatusType($event)"
+              >
+              </tds-select>
+              <input tdsInput size="md" [(ngModel)]="dataValue.times" />
+            </tds-form-field>-->
+            <tds-form-field *ngIf="
+                dataCreateForm.type == 'CommentPost' ||
+                dataCreateForm.type == 'TextingFriends' ||
+                dataCreateForm.type == 'JoinGroup' ||
+                dataCreateForm.type == 'MakeFriendsSuggestion' ||
+                dataCreateForm.type == 'ChangeAvatar' ||
+                dataCreateForm.type == 'SharePost' ||
+                dataCreateForm.type == 'MessageToPage' ||
+                dataCreateForm.type == 'MessageToFriend' ||
+                dataCreateForm.type == 'PostStatus' ||
+                dataCreateForm.type == 'PostGroup'||
+                dataCreateForm.type == 'SharePostToGroup'
+              ">
+              <tds-label>{{
+                dataCreateForm.type == "ChangeAvatar" ? "Path" : "Content"
+                }}</tds-label>
+              <input tdsInput size="md" [(ngModel)]="dataValue.content" />
+            </tds-form-field>
+            <tds-form-field *ngIf="
+                dataCreateForm.type == 'LikeNewsfeed' ||
+                dataCreateForm.type == 'LikeVideoWatch' ||
+                dataCreateForm.type == 'ReactionPost'
+              ">
+              <tds-label>Action</tds-label>
+              <tds-select placeholder="select action" [required]="true" [(ngModel)]="dataValue.action" [data]="action"
+                [allowClear]="true" (ngModelChange)="changeAction($event)">
+              </tds-select>
+            </tds-form-field>
+          </div>
+          <div>
+            <tds-form-field>
+              <tds-label>Default</tds-label>
+              <tds-select valueField="id" textField="name" [(ngModel)]="dataCreateForm.isDefault"
+                placeholder="select default" [data]="boolValue" size="sm"
+                (ngModelChange)="defaultChange(dataCreateForm.isDefault)">
+              </tds-select>
+            </tds-form-field>
+          </div>
+          <div *ngIf="dataCreateForm.isDefault">
+            <tds-form-field>
+              <tds-label>Profile Apply</tds-label>
+              <tds-select valueField="listIdProfile" textField="nameProfile" [(ngModel)]="profilesApplyScriptDefault"
+                placeholder="Select profile to apply" [data]="listNameProfile" size="sm" mode="multiple">
+              </tds-select>
+            </tds-form-field>
+          </div>
+          <div>
+            <tds-form-field>
+              <tds-label>Active</tds-label>
+              <tds-select valueField="id" textField="name" [(ngModel)]="dataCreateForm.isActive"
+                placeholder="select active" [data]="boolValue" size="sm">
+              </tds-select>
+            </tds-form-field>
+          </div>
+        </div>
+      </div>
+     
+    </ng-container>
+  </tds-modal>
+<tds-modal [(visible)]="isVisibleUpdateProfile" title="Chỉnh sửa hồ sơ" 
+(onCancel)="handleCancelUpdateProfile()" (onOk)="handleOkUpdateProfile()">
+<ng-container *tdsModalContent>
+    <div *ngIf="dataEditForm.type != 'Undefined'">
+      <div >
+        <tds-form-field>
+          <tds-label>Script Name</tds-label>
+          <input tdsInput size="sm" [(ngModel)]="dataEditForm.scriptName" [required]="true" autofocus />
+          <tds-error *ngIf="dataEditForm.scriptName == ''">{{
+            getErrorMessage(dataEditForm.scriptName)
+            }}</tds-error>
+        </tds-form-field>
+      </div>
+      <div>
+        <tds-form-field *ngIf="
+        dataEditForm.type == '3' ||
+        dataEditForm.type == '13' ||
+        dataEditForm.type == '19' ||
+        dataEditForm.type == '4' ||
+        dataEditForm.type == '21' ||
+        dataEditForm.type == '22' ||
+        dataEditForm.type == '17' ||
+        dataEditForm.type == '18'||
+        dataEditForm.type == '16'||
+        dataEditForm.type == '20'
+          ">
+          <tds-label>URL</tds-label>
+          <input tdsInput size="md" [(ngModel)]="dataValueEdit.url" />
+        </tds-form-field>
+        <tds-form-field *ngIf="
+        dataEditForm.type == '1' ||
+        dataEditForm.type == '9' ||
+        dataEditForm.type == '11'
+          ">
+          <tds-label>Time</tds-label>
+          <tds-input-number [(ngModel)]="dataValueEdit.time" [min]="1" [max]="60" [step]="1"
+            (ngModelChange)="onChange($event)">
+          </tds-input-number>
+        </tds-form-field>
+        <tds-form-field *ngIf="
+        dataEditForm.type == '2' ||
+        dataEditForm.type == '5' ||
+        dataEditForm.type == '8' ||
+        dataEditForm.type == '10' ||
+        dataEditForm.type == '7' ||
+        dataEditForm.type == '12' ||
+        dataEditForm.type == '16'||
+        dataEditForm.type == '13'
+          ">
+          <tds-label>Times</tds-label>
+          <tds-select placeholder="select times" [required]="true" [data]="times" [allowClear]="true"
+            [(ngModel)]="dataValueEdit.times" (ngModelChange)="changeTimes($event)">
+          </tds-select>
+        </tds-form-field>
+        <tds-form-field *ngIf="
+        dataEditForm.type == '3' ||
+        dataEditForm.type == '12' ||
+        dataEditForm.type == '7' ||
+        dataEditForm.type == '19' ||
+        dataEditForm.type == '21' ||
+        dataEditForm.type == '22' ||
+        dataEditForm.type == '17' ||
+        dataEditForm.type == '18'||
+        dataEditForm.type == '20'
+          ">
+          <tds-label>Content</tds-label>
+          <input tdsInput size="md" [(ngModel)]="dataValueEdit.content" />
+        </tds-form-field>
+        <tds-form-field *ngIf="
+        dataEditForm.type == '2' ||
+        dataEditForm.type == '10' ||
+        dataEditForm.type == '16'
+          ">
+          <tds-label>Action</tds-label>
+          <tds-select placeholder="select action" [required]="true" [(ngModel)]="dataValueEdit.action" [data]="action"
+            [allowClear]="true" (ngModelChange)="changeAction($event)">
+          </tds-select>
+        </tds-form-field>
+      </div>
+      <div>
+        <tds-form-field>
+          <tds-label>Default</tds-label>
+          <tds-select valueField="id" textField="name" [(ngModel)]="dataEditForm.isDefault"
+            placeholder="select default" [data]="boolValue" size="sm"
+            (ngModelChange)="defaultChange(dataEditForm.isDefault)">
+          </tds-select>
+        </tds-form-field>
+      </div>
+      <div>
+        <tds-form-field>
+          <tds-label>Active</tds-label>
+          <tds-select valueField="id" textField="name" [(ngModel)]="dataCreateForm.isActive"
+            placeholder="select active" [data]="boolValue" size="sm">
+          </tds-select>
+        </tds-form-field>
+      </div>
+    </div>
+  <br>
+  <div *ngIf="dataEditForm.isDefault">
+    <tds-label>Chọn hồ sơ</tds-label>
+    <tds-select
+    placeholder="Chọn kiểu kịch bản"
+    valueField="nameProfile" textField="nameProfile"
+    [data]="listProfileOfScript"
+    [(ngModel)]="listNameProfileUpdate"
+    [allowClear]="true"
+    mode="multiple">
+  </tds-select>
+  </div>
+  
+
+</ng-container>
+</tds-modal>

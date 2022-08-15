@@ -1,0 +1,533 @@
+<div
+  style="height: 93vh"
+  class="w-full p-2"
+  [ngClass]="{ loadingInfo: InfoLoading }"
+>
+  <div class="listAccoumt">
+    <div class="nameContent">
+      <span>Danh sách tài khoản</span>
+    </div>
+    <div class="addAccount">
+      <div class="flex items-center">
+        <span>Chọn từ</span>
+        <tds-input-number
+          class="inputTick"
+          [(ngModel)]="firstValue"
+          [min]="1"
+          [max]="10"
+          [step]="1"
+          (ngModelChange)="onChange($event)"
+        >
+        </tds-input-number>
+        <span> đến</span>
+        <tds-input-number
+          class="inputTick"
+          [(ngModel)]="endValue"
+          [min]="1"
+          [max]="10"
+          [step]="1"
+          (ngModelChange)="onChange($event)"
+        ></tds-input-number>
+        <app-tproxy-button
+          [text]="'Xác nhận'"
+          [color]="'primary'"
+          [icon]="'tdsi-click-fill'"
+          (click)="chooseUser()"
+          class="ml-3"
+        ></app-tproxy-button>
+        <app-tproxy-button
+          [text]="'Đặt lại'"
+          [color]="'primary'"
+          [icon]="'tdsi-reload-fill'"
+          (click)="cancelScript()"
+          class="ml-3"
+        ></app-tproxy-button>
+        <!-- <app-tproxy-button (click)="chooseUser()" class="ml-3" [label]="'rgb(255 119 51)'" >Xác nhận</app-tproxy-button> -->
+      </div>
+      <div class="flex">
+        <tds-button-group>
+          <button
+            tds-button
+            class="ml-2 cursor-pointer"
+            size="md"
+            [color]="'info'"
+            tds-dropdown
+            trigger="click"
+            [tdsDropdownMenu]="menu"
+          >
+            <span class="flex items-center">
+              <i class="tdsi-table-add-line text-lg leading-none mr-2"></i>Thêm
+              tài khoản
+            </span>
+          </button>
+          <tds-dropdown-menu #menu="tdsDropdownMenu">
+            <div class="w-full">
+              <div (click)="showModal()" tds-dropdown-item>
+                <a>Nhập form</a>
+              </div>
+              <div (click)="showModalExcel()" tds-dropdown-item>
+                <a>Thêm tài khoản bằng excel</a>
+              </div>
+            </div>
+          </tds-dropdown-menu>
+        </tds-button-group>
+        <!-- <app-tproxy-button
+          [text]="'Thêm mới tài khoản'"
+          [color]="'primary'"
+          [icon]="'tdsi-add-fill'"
+          (click)="showModal()"
+        ></app-tproxy-button> -->
+        <app-tproxy-button
+          [text]="'Xóa tài khoản'"
+          [color]="'error'"
+          [icon]="'tdsi-backspace-line'"
+          (click)="error()"
+          class="ml-2"
+          [disabled]="disableButton"
+        ></app-tproxy-button>
+        <app-tproxy-button
+          [text]="'Thêm hồ sơ tài khoản'"
+          [color]="'primary'"
+          [icon]="'tdsi-table-add-line'"
+          (click)="showModalAddProfile()"
+          class="ml-2"
+          [disabled]="disableButton"
+        ></app-tproxy-button>
+        <!-- <app-tproxy-button
+          [text]="'Cập nhật bạn bè'"
+          [color]="'info'"
+          [icon]="'tdsi-application-line'"
+          (click)="getListFriend()"
+          [disabled]="disableButton"
+          class="ml-2"
+        ></app-tproxy-button>
+        <app-tproxy-button
+          [text]="'Cập nhật thông tin'"
+          [color]="'info'"
+          [icon]="'tdsi-confirm-page-line'"
+          (click)="getInfoUser()"
+          [disabled]="disableButton"
+          class="ml-2"
+        ></app-tproxy-button> -->
+        <app-tproxy-button
+          [text]="'Mở Chrome'"
+          [color]="'info'"
+          [icon]="'tdsi-language-line'"
+          (click)="openChrome()"
+          class="ml-2"
+          [disabled]="disableButton"
+        ></app-tproxy-button>
+      </div>
+    </div>
+    <div class="tableAccount">
+      <tds-table
+        #basicTable
+        [listData]="listAccount"
+        [(pageSize)]="pageSize"
+        [(pageIndex)]="pageIndex"
+        (currentPageDataChange)="onCurrentPageDataChange($event)"
+        [frontPagination]="false"
+        (queryParams)="onQueryParamsChange($event)"
+        [total]="totalTable"
+      >
+        <thead>
+          <tr style="height: 5vh" class="bg-neutral-3-50">
+            <th
+              class="w-12 hover:bg-neutral-3-100"
+              [checked]="checked"
+              [indeterminate]="indeterminate"
+              (checkedChange)="onAllChecked($event)"
+            ></th>
+            <th>Tên tài khoản</th>
+            <!-- <th>ID tài khoản</th> -->
+            <th>ProxyIp</th>
+            <th>Trực tuyến</th>
+            <th>Trạng thái</th>
+            <th>Tên máy tính</th>
+            <th>Chrome Profile</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-template ngFor let-item [ngForOf]="basicTable.data" let-odd="odd">
+            <tr
+              style="height: 5vh"
+              class="border-b border-neutral-2-100 hover:bg-neutral-3-50 text-neutral-1-900"
+            >
+              <td
+                [checked]="setOfCheckedId.has(item.id)"
+                [disabled]="item.disabled"
+                (checkedChange)="onItemChecked(item.id, $event)"
+              ></td>
+              <td>
+                <a
+                  class="link"
+                  href="https://www.facebook.com/{{ item.userName }}"
+                  target="_blank"
+                  >{{ item.nameFacebook }}</a
+                >
+              </td>
+              <!-- <td>{{ item.userName }}</td> -->
+              <td>{{ item.proxyIp }}</td>
+              <td>
+                <tds-tag status="success" *ngIf ="item.online">Online</tds-tag>
+                <tds-tag status="secondary" *ngIf ="!item.online">Offline</tds-tag>
+              </td>
+              <td>
+                <span *ngIf="item.isActive">Sẵn sàng</span>
+                <span *ngIf="!item.isActive">Chưa cấu hình</span>
+              </td>
+              <td>{{ item.computerName }}</td>
+              <td>{{ item.chromeProfile }}</td>
+              <td>
+                <!-- <button tooltipTitle="profile" tds-tooltip (click)="showModalProfile(item)" tds-button color="primary" class="text-xl text-primary-1 ml-2" [disabled]="disableButtonAction">
+                  <span class="flex items-center">
+                    <i class="tdsi-note-fill text-lg leading-none"></i>
+                  </span>
+                </button> -->
+                <button
+                  tooltipTitle="xóa"
+                  tds-tooltip
+                  (click)="deleteSingle(item.id)"
+                  tds-button
+                  color="error"
+                  class="text-xl text-primary-1 ml-2"
+                  [disabled]="disableButtonAction"
+                >
+                  <span class="flex items-center">
+                    <i class="tdsi-trash-line text-lg leading-none"></i>
+                  </span>
+                </button>
+                <button
+                  tooltipTitle="chỉnh sửa"
+                  tds-tooltip
+                  (click)="showModalUpdateClient(item)"
+                  tds-button
+                  color="success"
+                  class="text-xl text-primary-1 ml-2"
+                  [disabled]="disableButtonAction"
+                >
+                  <span class="flex items-center">
+                    <i class="tdsi-edit-fill text-lg leading-none"></i>
+                  </span>
+                </button>
+                <!-- <button tooltipTitle="chart" tds-tooltip (click)="showModalChart(item)" tds-button color="success" class="text-xl text-primary-1 ml-2" [disabled]="disableButtonAction">
+                  <span class="flex items-center">
+                    <i class="tdsi-bar-chart-circle-fill text-lg leading-none"></i>
+                  </span>
+                </button> -->
+              </td>
+            </tr>
+          </ng-template>
+        </tbody>
+      </tds-table>
+    </div>
+  </div>
+</div>
+<!-- <tds-modal
+  [(visible)]="isVisibleProfile"
+  title="{{ userNameChart }}"
+  (onCancel)="handleCancelProfile()"
+  (onOk)="handleOkProfile()"
+>
+  <ng-container *tdsModalContent>
+    <div class="grid grid-cols-4 gap-1 gap-y-4" >
+      <div  class="flex items-center" *ngFor="let item of listProfile" >
+          <span>{{item.profileName}}</span>
+          <tds-checkbox class="ml-2" [checked]="item.status" (change)="getChecked($event,item.profileName)"></tds-checkbox>
+      </div>
+    </div>
+  </ng-container>
+</tds-modal> -->
+<tds-modal
+  centered
+  size="xl"
+  [(visible)]="isVisibleChart"
+  title="{{ dataChartClient?.nameFacebook }}"
+  (onCancel)="handleCancelChart()"
+  (onOk)="handleOkChart()"
+  [footer]="null"
+>
+  <ng-container *tdsModalContent>
+    <app-client-activity-chart
+      [userNameChart]="userNameChart"
+    ></app-client-activity-chart>
+  </ng-container>
+</tds-modal>
+<tds-modal
+  [(visible)]="isVisibleUpdateClient"
+  title="Update Account"
+  (onCancel)="handleCancelUpdateClient()"
+  (onOk)="handleOkUpdateClient(itemShowModal)"
+>
+  <ng-container *tdsModalContent>
+    <div>
+      <tds-form-field>
+        <tds-label>Tên tài khoản</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.nameFacebook" />
+      </tds-form-field>
+    </div>
+    <div>
+      <tds-form-field>
+        <tds-label>Id Tài Khoản</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.userName" />
+      </tds-form-field>
+    </div>
+    <div>
+      <tds-form-field>
+        <tds-label>Password</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.password" />
+      </tds-form-field>
+    </div>
+    <!-- <div>
+      <tds-form-field>
+        <tds-label>Cookie</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.cookie" />
+      </tds-form-field>
+    </div> -->
+    <!-- <div>
+      <tds-form-field>
+        <tds-label>ProxyIp</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.proxyIp" />
+      </tds-form-field>
+    </div> -->
+    <div *ngIf="itemShowModal.secretKey == ''">
+      <tds-form-field>
+        <tds-label>SecretKey</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="updateSecretKey" />
+      </tds-form-field>
+    </div>
+    <!-- <div>
+      <tds-form-field>
+        <tds-label>Chrome Profile</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.chromeProfile" />
+      </tds-form-field>
+    </div> -->
+    <!-- <div>
+      <tds-form-field>
+        <tds-label>Computer Name</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.computerName" />
+      </tds-form-field>
+    </div> -->
+    <!-- <div>
+      <tds-form-field>
+        <tds-label>AccessToken</tds-label>
+        <input tdsInput size="sm" [(ngModel)]="itemShowModal.accessToken" />
+      </tds-form-field>
+    </div> -->
+    <div>
+      <tds-form-field>
+        <tds-label>Active</tds-label>
+        <tds-form-field>
+          <tds-select
+            valueField="itemShowModal.isActive"
+            textField="name"
+            placeholder="select type"
+            [data]="isActive"
+            size="sm"
+            [(ngModel)]="itemShowModal.isActive"
+            [allowClear]="true"
+          >
+          </tds-select>
+        </tds-form-field>
+      </tds-form-field>
+    </div>
+    <div>
+      <tds-form-field>
+        <tds-label>Hồ sơ</tds-label>
+        <tds-select
+          placeholder="select item"
+          valueField="profileName"
+          textField="profileName"
+          [data]="listProfileWithId"
+          [(ngModel)]="selected"
+          mode="multiple"
+        ></tds-select>
+      </tds-form-field>
+    </div>
+  </ng-container>
+</tds-modal>
+<div *ngIf="InfoLoading" class="loading">
+  <svg
+    class="spinner"
+    width="65px"
+    height="65px"
+    viewBox="0 0 66 66"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      class="path"
+      fill="none"
+      stroke-width="6"
+      stroke-linecap="round"
+      cx="33"
+      cy="33"
+      r="30"
+    ></circle>
+  </svg>
+</div>
+<!-- them tai khoan bang excel -->
+<tds-modal
+  [(visible)]="isVisibleExcel"
+  title="Thêm tài khoản bằng Excel"
+  (onCancel)="handleCancelExcel()"
+  (onOk)="handleOkExcel()"
+>
+  <ng-container *tdsModalContent>
+    <div class="flex items-center">
+      <tds-label class="ml-1 mb-1">Chọn file Excel</tds-label>
+      <app-tproxy-button
+        [text]="'Tải file Excel mẫu'"
+        [color]="'primary'"
+        [icon]="'tdsi-download-fill'"
+        (click)="downloadExcel()"
+        class="ml-3 mb-3"
+      ></app-tproxy-button>
+    </div>
+    <div class="uploadAvatar">
+      <input
+        style="background: #e5e5e5"
+        disabled="true"
+        type="text"
+        [(ngModel)]="nameExcelFile"
+      />
+      <input
+        type="file"
+        class="hidden"
+        #excelFiles
+        (change)="handleFileSelect($event)"
+      />
+      <button
+        class="ml-2"
+        tds-button
+        color="success"
+        (click)="excelFiles.click()"
+      >
+        <span class="flex items-center">
+          <i class="tdsi-excel-fill text-lg leading-none mr-2"></i>Excel file
+        </span>
+      </button>
+    </div>
+    <div *ngIf="excelCount > 0" class="mt-1">
+      <span>Bạn vừa chọn thêm </span>
+      <span class="text-black font-semibold">{{ excelCount }}</span>
+      <span> tài khoản</span>
+    </div>
+  </ng-container>
+</tds-modal>
+<tds-modal
+  [(visible)]="isVisibleAddProfile"
+  title="Thêm hồ sơ tài khoản"
+  (onCancel)="handleCancelAddProfile()"
+  (onOk)="handleOkAddProfile()"
+>
+  <ng-container *tdsModalContent>
+    <div class="type">
+      <tds-label>Type</tds-label>
+      <tds-select
+        valueField="listIdProfile"
+        textField="nameProfile"
+        [allowClear]="true"
+        placeholder="Chọn hồ sơ"
+        [data]="listNameProfile"
+        size="sm"
+        [(ngModel)]="idAddProfile"
+      >
+      </tds-select>
+    </div>
+  </ng-container>
+</tds-modal>
+<tds-modal
+  [(visible)]="isVisible"
+  title="Thêm mới tài khoản"
+  (onCancel)="handleCancel()"
+  (onOk)="handleOk()"
+>
+  <ng-container *tdsModalContent>
+    <div>
+      <tds-form-field>
+        <tds-label>Tên tài khoản</tds-label>
+        <input
+          placeholder="nhập tên tài khoản"
+          tdsInput
+          size="sm"
+          [(ngModel)]="nameFacebook"
+          [required]="true"
+        />
+      </tds-form-field>
+    </div>
+    <div>
+      <tds-form-field>
+        <tds-label>Mật khẩu</tds-label>
+        <input
+          placeholder="nhập mật khẩu"
+          tdsInput
+          size="sm"
+          [(ngModel)]="passWord"
+          [required]="true"
+        />
+      </tds-form-field>
+    </div>
+    <div>
+      <tds-form-field>
+        <tds-label>Đường dẫn ảnh đại diện</tds-label>
+        <input
+          placeholder="dán đường dẫn ảnh đại diện"
+          tdsInput
+          size="sm"
+          [(ngModel)]="avatarUrl"
+          [required]="true"
+        />
+      </tds-form-field>
+    </div>
+    <div>
+      <tds-form-field>
+        <tds-label>ID tài khoản</tds-label>
+        <input
+          placeholder="nhập Id tài khoản facebook"
+          tdsInput
+          size="sm"
+          [(ngModel)]="nameUser"
+          [required]="true"
+        />
+      </tds-form-field>
+    </div>
+    <div>
+      <tds-form-field>
+        <tds-label>SecretKey</tds-label>
+        <input
+          placeholder="điền secretKey"
+          tdsInput
+          size="sm"
+          [(ngModel)]="secretKey"
+          [required]="true"
+        />
+      </tds-form-field>
+    </div>
+    <!-- <div>
+    <tds-form-field>
+      <tds-label>Cookie</tds-label>
+      <input placeholder="nhâp cookie" tdsInput size="sm" [(ngModel)]="cookie" />
+    </tds-form-field>
+  </div> -->
+    <!-- <div>
+    <tds-form-field>
+      <tds-label>AccessToken</tds-label>
+      <input placeholder="điền accessToken" tdsInput size="sm" [(ngModel)]="accessToken" />
+    </tds-form-field>
+  </div> -->
+    <div>
+      <tds-form-field>
+        <tds-label>Thêm hồ sơ</tds-label>
+        <tds-select
+          placeholder="select item"
+          valueField="nameProfile"
+          textField="nameProfile"
+          [data]="listNameProfile"
+          [(ngModel)]="listSelectedProfile"
+          mode="multiple"
+        ></tds-select>
+      </tds-form-field>
+    </div>
+  </ng-container>
+</tds-modal>

@@ -1,0 +1,19 @@
+.header{
+    text-align: center;
+    color: red;
+}
+.body{
+margin-top: 20px;
+}
+.link:visited {
+    color: green;
+  }
+  .link:link {
+    color: rgb(82, 82, 245)
+  }
+  .link:hover {
+    color: blue;
+  }
+  .link{
+    text-decoration: underline
+  }

@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/extentionsAngular/node_modules
+/extentionsAngular/.angular/cache
+/extentionsAngular/angular/dist
+/aspnet-core/src/Extention.Management.EntityFrameworkCore.DbMigrations/Migrations

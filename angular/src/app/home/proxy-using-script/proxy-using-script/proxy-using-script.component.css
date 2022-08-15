@@ -1,0 +1,64 @@
+.container-fluid{
+    margin: 15px;
+}
+.containerCard{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+.card{
+    width: 24%;
+}
+.card-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+.icon{
+    color: white;
+}
+.disconnected{
+    background: rgb(45 196 241);
+}
+.active{
+    background: rgb(45 196 241);
+}
+.total{
+    background: rgb(45 196 241);
+}
+.alive{
+    background: rgb(45 196 241);
+}
+.tableContainer::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+    border-radius: 5px;
+  }
+  
+  .tableContainer::-webkit-scrollbar {
+    width: 5px;
+    background-color: #d5ecf7;
+    border-radius: 5px;
+  }
+  
+  .tableContainer::-webkit-scrollbar-thumb {
+    background-color: rgb(45 196 241);
+    border-radius: 5px;
+  }
+  .tableClientUsingScript:hover {
+     background-color: #e5e5e5;
+  }
+  .hrefHover:hover
+  {
+    color : rgb(45 196 241)
+  }
+  .tableInfo{
+    width: 40%;
+    padding: 1%;
+    border: solid 1px #e5e5e5;
+    margin-left: 1rem;
+}
+.loadingInfo{
+    opacity: 0.4;
+  }

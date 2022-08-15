@@ -1,0 +1,35 @@
+<div *ngIf="isProxySuccess==0">
+  <div class="spin">
+    <div id="spinChild" class="spinner-grow text-primary" role="status">
+    </div>
+  </div>
+  <div class="spin">
+    <h2>Đang cấu hình proxy
+      <span class="badge">IP: {{ipHost}}</span>
+    </h2>
+  </div>
+</div>
+<div *ngIf="isProxySuccess==1">
+  <nz-result nzStatus="success">
+    <div nz-result-extra>
+      <h2>Cấu hình proxy thành công.
+      </h2>
+    </div>
+  </nz-result>
+</div>
+<div *ngIf="isProxySuccess==-1">
+  <div class="spin">
+    <div id="spinChild" class="spinner-grow text-info" role="status">
+    </div>
+  </div>
+  <div class="spin">
+    <h2>Đang kiểm tra ip máy
+    </h2>
+  </div>
+</div>
+<!-- <div>
+  <button id="setIpProxy" nz-button nzType="default" (click)="getIpProxy()">Get Proxy</button>
+  <button id="setIpProxy" nz-button nzType="default" (click)="setIpProxy()">Proxy</button>
+  <button id="setAuthProxy" nz-button nzType="default" (click)="setAuthProxy()">Set Auth</button>
+  <button id="getIP" nz-button nzType="default" (click)="getIP()">Check IP</button>
+</div> -->

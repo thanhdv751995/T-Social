@@ -1,0 +1,647 @@
+<!-- 
+<tds-tabset>
+  <tds-tab title="Tab 1">Content of Tab Pane 1</tds-tab>
+  <tds-tab title="Tab 2">Content of Tab Pane 2</tds-tab>
+  <tds-tab title="Tab 3">Content of Tab Pane 3</tds-tab>
+</tds-tabset> -->
+<div [ngClass]="{ loadingInfo: InfoLoading || loadingComponent}">
+  <div class="nameContent">
+    <span>Danh sách chiến dịch</span>
+  </div>
+  <div class="flex items-center" style="padding: 0 0 1rem 1rem">
+    <tds-button-group>
+      <button
+        tds-button
+        class="ml-2 cursor-pointer"
+        size="md"
+        [color]="'info'"
+        tds-dropdown
+        trigger="click"
+        [tdsDropdownMenu]="menu"
+      >
+        <span class="flex items-center">
+          <i class="tdsi-table-add-line text-lg leading-none mr-2"></i>Thêm
+          chiến dịch
+        </span>
+      </button>
+      <tds-dropdown-menu #menu="tdsDropdownMenu">
+        <div class="w-full">
+          <div (click)="showModalAddCampaign('Seeding URL')" tds-dropdown-item>
+            <a> Seeding URL</a>
+          </div>
+          <div (click)="showModalAddCampaign('Seeding Post')" tds-dropdown-item>
+            <a> Seeding Post </a>
+          </div>
+        </div>
+      </tds-dropdown-menu>
+    </tds-button-group>
+
+    <tds-form-field class="ml-2">
+      <input
+        tdsInput
+        autocomplete="off"
+        placeholder="Tên chiến dịch"
+        [(ngModel)]="nameCampaignFilter"
+        (ngModelChange)="filterCampaign($event)"
+      />
+    </tds-form-field>
+    <button
+      tds-button
+      [ngClass]="{ activeDiv: conditionValue == 1 }"
+      class="ml-2 cursor-pointer"
+      size="md"
+      [color]="'info'"
+      (click)="getConditionValue('1')"
+    >
+      <span class="flex items-center">
+        <i class="tdsi-shipper-line text-lg leading-none mr-2"></i>Tác vụ đang
+        chạy
+      </span>
+    </button>
+    <button
+      tds-button
+      [ngClass]="{ activeDiv: conditionValue == 2 }"
+      class="ml-2 cursor-pointer"
+      size="md"
+      [color]="'info'"
+      (click)="getConditionValue('2')"
+    >
+      <span class="flex items-center">
+        <i class="tdsi-product-success-line text-lg leading-none mr-2"></i>Tác
+        vụ đã xử lý
+      </span>
+    </button>
+    <i
+      (click)="getConditionValue('0')"
+      class="tdsi-reload-fill ml-2 text-2xl text-primary-3 cursor-pointer"
+    ></i>
+  </div>
+  <div class="divTable">
+    <tds-table
+      #basicTable
+      [listData]="listCampaign"
+      tableLayout="fixed"
+      [(pageSize)]="pageSize"
+      [(pageIndex)]="pageIndex"
+      [frontPagination]="false"
+      (queryParams)="onQueryParamsChange($event)"
+      [total]="totalCount"
+    >
+      <thead>
+        <tr style="height: 5vh; background-color: #e5e5e5">
+          <th width="60px"></th>
+          <th>Tên chiến dịch</th>
+          <th>Tên nhóm</th>
+          <th>Đăng nhóm</th>
+          <th>Đăng tường</th>
+          <th>Chia sẻ nhóm</th>
+          <th>Chỉa sẻ tường</th>
+          <th>Bình luận</th>
+          <th>Thả biểu cảm</th>
+          <th>Kịch bản đã xử lý</th>
+          <!-- <th>Nội dung seeding</th> -->
+          <th>Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-template ngFor let-data [ngForOf]="basicTable.data">
+          <tr class="tableProfile">
+            <td
+              [expand]="expandSet.has(data.id)"
+              (expandChange)="onExpandChange(data.id, $event)"
+            ></td>
+            <td tooltipTitle="{{ data.name }}" tds-tooltip>
+              {{ data.name | nameSeeding }}
+            </td>
+            <td>{{ data.groupName }}</td>
+            <td>{{ data.countPostGroups }}</td>
+            <td>{{ data.countPostWall }}</td>
+            <td>{{ data.countShareGroups }}</td>
+            <td>{{ data.countShareWall }}</td>
+            <td>{{ data.countComments }}</td>
+            <td>{{ data.countReacts }}</td>
+            <td>{{data.processed}}</td>
+            <td>
+              <button
+                (click)="deleteCampaign(data.id)"
+                tds-button
+                color="error"
+              >
+                <span class="flex items-center">
+                  <i class="tdsi-trash-line text-l leading-none"></i>
+                </span>
+              </button>
+              <button
+                (click)="logSeeding(data.name)"
+                tooltipTitle="Xem tác vụ đang chạy"
+                tooltipPlacement="top"
+                class="ml-2"
+                tds-button
+                color="primary"
+                tds-tooltip
+              >
+                <span class="flex items-center">
+                  <i class="tdsi-align-right-line text-l leading-none"></i>
+                </span>
+              </button>
+              <button
+                (click)="logSeedingUnfinished(data.name)"
+                tooltipTitle="Xem tác vụ chưa hoàn thành"
+                tooltipPlacement="top"
+                class="ml-2"
+                tds-button
+                color="primary"
+                tds-tooltip
+              >
+                <span class="flex items-center">
+                  <i class="tdsi-quick-apply-fill text-l leading-none"></i>
+                </span>
+              </button>
+            </td>
+          </tr>
+          <tr
+            *ngIf="idSeedingToShow == data.id"
+            [expand]="expandSet.has(data.id)"
+            class="border-b border-neutral-2-100 text-neutral-1-900"
+          >
+            <td style="padding-left: 5rem">
+              <app-seeding-logs [seedingName]="data.name"></app-seeding-logs>
+            </td>
+          </tr>
+        </ng-template>
+      </tbody>
+    </tds-table>
+  </div>
+  <tds-modal
+    size="lg"
+    [(visible)]="isVisible"
+    title="Thêm mới chiến dịch"
+    okText="Ok"
+    cancelText="Cancel"
+    [footer]="null"
+    (onOk)="handleOkAddCampaign()"
+    (onCancel)="handleCancelAddCampaign()"
+  >
+    <ng-container *tdsModalContent>
+      <form novalidate [formGroup]="campaignForm">
+        <div>
+          <tds-form-field>
+            <tds-label class="flex items-center"
+              >Theo loại Group<i
+                tds-tooltip
+                [tooltipTitle]="titleTemplate"
+                class="tdsi-question-line text-primary-1 ml-1"
+              ></i
+            ></tds-label>
+            <ng-template #titleTemplate>
+              <span class="tdsi-edit-fill mr-2"></span>
+              <span
+                >Các tài khoản đã tham gia nhóm theo loại sẽ chạy chiến dịch
+                theo đúng loại của chiến dịch đó</span
+              >
+              <p>
+                Ví dụ : chọn 5 like theo loại Football thì sẽ chọn 5 tài khoản
+                đã tham gia nhóm thuộc loại bóng đá để like bài đó
+              </p>
+            </ng-template>
+            <tds-select
+              placeholder="select type"
+              textField="name"
+              valueField="id"
+              size="md"
+              [allowClear]="true"
+              [data]="listGroupType"
+              formControlName="groupType"
+            >
+            </tds-select>
+            <tds-error>Vui lòng chọn Type</tds-error>
+          </tds-form-field>
+        </div>
+        <div>
+          <tds-form-field>
+            <tds-label>Tên chiến dịch</tds-label>
+            <input
+              tdsInput
+              [required]="true"
+              placeholder="Nhập tên chiến dịch"
+              autocomplete="off"
+              size="sm"
+              formControlName="name"
+            />
+            <tds-error>Vui lòng điền tên chiến dịch</tds-error>
+          </tds-form-field>
+        </div>
+        <div *ngIf="typeSeeding == 'Seeding URL'">
+          <tds-form-field>
+            <tds-label>URL bài viết</tds-label>
+            <input
+              tdsInput
+              [required]="true"
+              placeholder="Nhập đường dẫn bài viết"
+              autocomplete="off"
+              size="sm"
+              formControlName="url"
+            />
+            <tds-error>Vui lòng điền URL bài viết</tds-error>
+          </tds-form-field>
+        </div>
+        <div class="flex mt-1">
+          <div style="width: 20%">
+            <div *ngIf="typeSeeding == 'Seeding Post'">
+              <tds-form-field>
+                <tds-label>Post vào trang cá nhân</tds-label>
+                <tds-input-number
+                  autocomplete="off"
+                  tdsInput
+                  size="sm"
+                  formControlName="postsWall"
+                ></tds-input-number>
+                <tds-error>Vui lòng không để trống</tds-error>
+              </tds-form-field>
+            </div>
+            <div *ngIf="typeSeeding == 'Seeding Post'">
+              <tds-form-field>
+                <tds-label>Post vào nhóm</tds-label>
+                <tds-input-number
+                  autocomplete="off"
+                  tdsInput
+                  size="sm"
+                  formControlName="postsGroup"
+                ></tds-input-number>
+                <tds-error>Vui lòng không để trống</tds-error>
+              </tds-form-field>
+            </div>
+            <div>
+              <tds-form-field>
+                <tds-label>Bình luận</tds-label>
+                <tds-input-number
+                  autocomplete="off"
+                  tdsInput
+                  size="sm"
+                  formControlName="comments"
+                ></tds-input-number>
+                <tds-error>Vui lòng không để trống</tds-error>
+              </tds-form-field>
+            </div>
+            <div>
+              <tds-form-field>
+                <tds-label>Bày tỏ cảm xúc</tds-label>
+                <tds-input-number
+                  autocomplete="off"
+                  tdsInput
+                  size="sm"
+                  formControlName="reacts"
+                ></tds-input-number>
+                <tds-error>Vui lòng không để trống</tds-error>
+              </tds-form-field>
+            </div>
+            <div>
+              <tds-form-field>
+                <tds-label>Chia sẻ lên tường</tds-label>
+                <tds-input-number
+                  autocomplete="off"
+                  tdsInput
+                  size="sm"
+                  formControlName="sharesWall"
+                ></tds-input-number>
+                <tds-error>Vui lòng không để trống</tds-error>
+              </tds-form-field>
+            </div>
+            <div>
+              <tds-form-field>
+                <tds-label>Chia sẻ lên group</tds-label>
+                <tds-input-number
+                  autocomplete="off"
+                  tdsInput
+                  size="sm"
+                  formControlName="sharesGroup"
+                ></tds-input-number>
+                <tds-error>Vui lòng không để trống</tds-error>
+              </tds-form-field>
+            </div>
+          </div>
+          <div style="width: 5%"></div>
+          <div class="addForm">
+            <form *ngIf="typeSeeding == 'Seeding Post'" [formGroup]="form">
+              <tds-collapse [bordered]="false">
+                <tds-collapse-panel
+                  header="Nội dung bài Post"
+                  [active]="true"
+                  [disabled]="false"
+                >
+                  <div
+                    style="
+                      padding: 0 0.5rem 0.5rem 0.5rem;
+                      margin-top: -0.5rem;
+                      border: solid 1px #e5e5e5;
+                    "
+                  >
+                    <div>
+                      <ng-container formArrayName="lessons">
+                        <ng-container
+                          *ngFor="
+                            let lessonForm of lessons.controls;
+                            let i = index
+                          "
+                        >
+                          <div [formGroupName]="i" class="flex items-center">
+                            <div style="width: 90%">
+                              <tds-form-field class="w-full mt-2">
+                                <textarea
+                                  formControlName="content"
+                                  autocomplete="off"
+                                  tdsInput
+                                  placeholder="Nhập content"
+                                ></textarea>
+                              </tds-form-field>
+                              <div class="flex items-center">
+                                <tds-form-field class="w-full mt-2">
+                                  <input
+                                    tdsInput
+                                    autocomplete="off"
+                                    placeholder="Nhập link ảnh"
+                                    formControlName="imageUrl"
+                                  />
+                                </tds-form-field>
+                                <input
+                                  type="file"
+                                  class="hidden"
+                                  #selectImages
+                                  (change)="onFileSelected($event, i)"
+                                />
+                                <i
+                                  (click)="selectImages.click()"
+                                  class="tdsi-file-attached-fill text-2xl mt-2"
+                                ></i>
+                              </div>
+                            </div>
+                            <div>
+                              <div class="ml-4 h-8">
+                                <button
+                                  tds-button-icon
+                                  color="error"
+                                  size="sm"
+                                  (click)="deleteLesson(i)"
+                                >
+                                  <span class="flex items-center">
+                                    <i class="tdsi-close-fill"></i>
+                                  </span>
+                                </button>
+                              </div>
+                              <div
+                                *ngIf="!loadingImage && indexImage == i"
+                                style="margin: 2rem 0 0 1rem; z-index: 1000"
+                              >
+                                <tds-spinner
+                                  [color]="'secondary'"
+                                  class="mr-1 w-5 h-5"
+                                ></tds-spinner>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                    <div class="mt-2">
+                      <button tds-button color="primary" (click)="addLesson()">
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                </tds-collapse-panel>
+              </tds-collapse>
+            </form>
+            <form [formGroup]="formComment">
+              <tds-collapse
+                *ngIf="
+                  campaignForm.value.comments > 0 ||
+                  typeSeeding == 'Seeding URL'
+                "
+                [bordered]="false"
+              >
+                <tds-collapse-panel
+                  header="Nội dung bình luận"
+                  [active]="true"
+                  [disabled]="false"
+                >
+                  <div
+                    style="
+                      padding: 0 0.5rem 0.5rem 0.5rem;
+                      margin-top: -0.5rem;
+                      border: solid 1px #e5e5e5;
+                    "
+                  >
+                    <div>
+                      <ng-container formArrayName="comments">
+                        <ng-container
+                          *ngFor="
+                            let commentForm of comments.controls;
+                            let i = index
+                          "
+                        >
+                          <div [formGroupName]="i" class="flex">
+                            <div style="width: 90%">
+                              <tds-form-field class="w-full mt-2">
+                                <textarea
+                                  formControlName="content"
+                                  autocomplete="off"
+                                  tdsInput
+                                  placeholder="Nhập nội dung bình luận"
+                                ></textarea>
+                              </tds-form-field>
+                            </div>
+                            <div>
+                              <div class="ml-4 mt-7 h-8">
+                                <button
+                                  tds-button-icon
+                                  color="error"
+                                  size="sm"
+                                  (click)="deleteCommentForm(i)"
+                                >
+                                  <span class="flex items-center">
+                                    <i class="tdsi-close-fill"></i>
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                    <div class="mt-2 flex items-center">
+                      <button tds-button color="primary" (click)="addComment()">
+                        Add
+                      </button>
+                      <input
+                        type="file"
+                        class="hidden"
+                        #excelFiles
+                        (change)="handleFileSelect($event)"
+                      />
+                      <button
+                        class="ml-2"
+                        tds-button
+                        color="success"
+                        (click)="excelFiles.click()"
+                      >
+                        <span class="flex items-center">
+                          <i
+                            class="tdsi-excel-fill text-lg leading-none mr-2"
+                          ></i
+                          >Import File Excel
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </tds-collapse-panel>
+              </tds-collapse>
+            </form>
+            <form [formGroup]="formShareWall">
+              <tds-collapse
+                *ngIf="
+                  campaignForm.value.sharesWall > 0 ||
+                  campaignForm.value.sharesGroup > 0
+                "
+                [bordered]="false"
+              >
+                <tds-collapse-panel
+                  header="Nội dung chia sẻ lên tường , nhóm"
+                  [active]="true"
+                  [disabled]="false"
+                >
+                  <div
+                    style="
+                      padding: 0 0.5rem 0.5rem 0.5rem;
+                      margin-top: -0.5rem;
+                      border: solid 1px #e5e5e5;
+                    "
+                  >
+                    <div>
+                      <ng-container formArrayName="shareWalls">
+                        <ng-container
+                          *ngFor="
+                            let shareWallsForm of shareWalls.controls;
+                            let i = index
+                          "
+                        >
+                          <div [formGroupName]="i" class="flex">
+                            <div style="width: 90%">
+                              <tds-form-field class="w-full mt-2">
+                                <textarea
+                                  formControlName="content"
+                                  autocomplete="off"
+                                  tdsInput
+                                  placeholder="Nhập nội dung chia sẻ"
+                                ></textarea>
+                              </tds-form-field>
+                              <!-- <form [formGroup]="form" class="w-1/2 bg-white dark:bg-d-neutral-3-100 p-4 rounded">
+                                <ng-container formArrayName="lessons">
+                                    <ng-container *ngFor="let lessonForm of lessons.controls; let i = index">
+                                        <div class="flex" [formGroupName]="i">
+                                          <tds-form-field class="w-full">
+                                            <tds-label>Name: </tds-label>
+                                            <input tdsInput autocomplete="off" placeholder="Input something.." 
+                                               formControlName="name" [required]='true' />
+                                            <tds-error>You must input name</tds-error>
+                                          </tds-form-field>
+                                          <tds-form-field class="ml-4 w-full">
+                                            <tds-label>Phone: </tds-label>
+                                            <input tdsInput autocomplete="off" placeholder="Input something.." 
+                                               formControlName="phone" [required]='true' />
+                                            <tds-error>You must input phone</tds-error>
+                                          </tds-form-field>
+                                          <div class="ml-4 mt-7 h-8">
+                                              <button tds-button-icon color="error" size="sm" (click)="deleteLesson(i)">
+                                                  <span class="flex items-center">
+                                                      <i class="tdsi-close-fill"></i>
+                                                  </span>
+                                              </button>
+                                          </div>
+                                        </div>
+                                    </ng-container>
+                                </ng-container>
+                                <div class="mt-2">
+                                  <button tds-button color="primary" (click)="addLesson()">Add</button>
+                                  <button tds-button color="primary" class="ml-4" [disabled]="!form.valid">Submit</button>
+                                </div>
+                             </form> -->
+                            </div>
+                            <div>
+                              <div class="ml-4 mt-7 h-8">
+                                <button
+                                  tds-button-icon
+                                  color="error"
+                                  size="sm"
+                                  (click)="deleteShareWall(i)"
+                                >
+                                  <span class="flex items-center">
+                                    <i class="tdsi-close-fill"></i>
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                    <div class="mt-2">
+                      <button
+                        tds-button
+                        color="primary"
+                        (click)="addShareWall()"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                </tds-collapse-panel>
+              </tds-collapse>
+            </form>
+          </div>
+        </div>
+        <div class="justify-end flex mt-8">
+          <button (click)="handleCancelAddCampaign()" tds-button color="error">
+            Hủy bỏ
+          </button>
+          <button
+            (click)="handleOkAddCampaign()"
+            tds-button
+            color="primary"
+            class="ml-4"
+            type="submit"
+          >
+            Lưu
+          </button>
+        </div>
+      </form>
+    </ng-container>
+  </tds-modal>
+</div>
+
+<div *ngIf="InfoLoading">
+  <div class="loader">
+    <div class="inner one"></div>
+    <div class="inner two"></div>
+    <div class="inner three"></div>
+  </div>
+  <p class="PLoad">Hệ thống đang xử lý ...</p>
+</div>
+<div *ngIf="loadingComponent" class="loading">
+  <svg
+    class="spinner"
+    width="65px"
+    height="65px"
+    viewBox="0 0 66 66"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle
+      class="path"
+      fill="none"
+      stroke-width="6"
+      stroke-linecap="round"
+      cx="33"
+      cy="33"
+      r="30"
+    ></circle>
+  </svg>
+</div>

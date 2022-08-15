@@ -1,0 +1,35 @@
+
+<tds-table #table [listData]="listOfData" tableLayout="fixed">
+    <thead>
+        <tr style="height: 4vh; text-align: center; background-color: #e5e5e5">
+            <th width="60px"></th>
+            <th>Avatar Fanpage</th>
+            <th>Tên Fanpage</th>
+            <th>Thời gian tham gia</th>
+            <th>Lần tương tác cuối cùng</th>
+            <th>Số lần tương tác trong nhóm</th>
+            <th>Số bài viết đã đăng</th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngFor="let data of table.data">
+            <tr class="tableProfile">
+                <td [expand]="expandSet.has(data.id)" (expandChange)="onExpandChange(data.id, $event)"></td>
+                <td>Like cho Hòa</td>
+                <td>Hòa - Vip</td>
+                <td>10h</td>
+                <td>04/07/1998</td>
+                <td>103</td>
+                <td>10</td>
+            </tr>
+            <tr [expand]="expandSet.has(data.id)"  class="border-b border-neutral-2-100 text-neutral-1-900" >
+                <td>
+                    <div class ="tableStatusInGroup">
+                        <app-list-status-in-group></app-list-status-in-group>
+                    </div>
+
+                </td>
+            </tr>
+        </ng-container>
+    </tbody>
+</tds-table>

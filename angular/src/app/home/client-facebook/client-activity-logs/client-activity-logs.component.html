@@ -1,0 +1,111 @@
+<div class="datePicker">
+  <div class="flex items-center">
+    <!-- <tds-date-picker
+    style="width: 300px"
+    placeholder ='Nhập ngày bắt đầu'
+    [(ngModel)]="SDate"
+    [disabledDate]="disabledDate"
+    (ngModelChange)="onStartDateChange($event)"
+  >
+  </tds-date-picker>
+  <tds-date-picker
+  class="ml-2"
+  placeholder ='Nhập ngày kết thúc'
+  style="width: 300px"
+  [(ngModel)]="EDate"
+  [disabledDate]="disabledDate"
+  (ngModelChange)="onEndDateChange($event)"
+>
+</tds-date-picker> -->
+
+<tds-range-picker  style="width: 600px" [(ngModel)]="rangeDate" (ngModelChange)="onChange($event)">
+</tds-range-picker>
+<span class="ml-2"> Total : {{totalTable}} logs</span>
+  </div>
+
+</div>
+<div class="tableLogs">
+  <tds-table templateMode>
+    <thead>
+      <tr>
+        <th >Tên kịch bản</th>
+        <th width="70%">Đường dẫn</th>
+        <th width="20%">Thời gian</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let item of listLogsActivity">
+      <tr>
+        <td>{{ item.typeName }}</td>
+        <td>
+          <div *ngIf="item.typeName != 'CloseChrome'">
+            <div *ngIf="item.content.length < 100">
+              <div style ="max-width:500px; word-break: break-all;">
+                <div *ngIf="checkTypeScript(item.typeName) == 'Reacts'">
+                  <a class ="hrefHover" href="{{checkContent(item.content|formatLogUrl)}}" target="_blank" >
+                   {{item.content|formatLogUrl}} - </a>
+                  <span>{{item.content|supportContent}} - </span>
+                  <span>{{item.content|formatURL}} </span>
+                </div>
+                <div *ngIf="checkTypeScript(item.typeName) == 'Different'">
+                  <a class ="hrefHover" href="{{checkContent(item.content|formatLogUrl)}}" target="_blank" >
+                    {{item.content|formatLogUrl}} - </a>
+                  <span>{{item.content|supportContent}} </span>
+                </div>
+                <div *ngIf="checkTypeScript(item.typeName) == 'Default'">
+                  {{ item.content| formatString }}
+                </div>
+              </div>
+            </div>
+            <div  *ngIf="item.content.length >= 100">
+              <span>{{item.content | nameScriptPiPe}}</span> 
+              <tds-button-group>
+                <button class="border-none" size="sm" tds-button color="secondary" tds-dropdown trigger="click" [tdsDropdownMenu]="scriptName" [placement]="'topCenter'">
+                    <span class="flex items-center">...</span>
+                </button>
+                <tds-dropdown-menu #scriptName="tdsDropdownMenu">
+                  <div style ="max-width:500px; word-break: break-all;">
+                    <div *ngIf="checkTypeScript(item.typeName) == 'Reacts'">
+                      <a class ="hrefHover" href="{{checkContent(item.content|formatLogUrl)}}" target="_blank" > {{item.content|formatLogUrl}} - </a>
+                      <span>{{item.content|supportContent}} - </span>
+                      <span>{{item.content|formatURL}} </span>
+                    </div>
+                    <div *ngIf="checkTypeScript(item.typeName) == 'Different'">
+                      <a class ="hrefHover" href="{{checkContent(item.content|formatLogUrl)}}" target="_blank" > {{item.content|formatLogUrl}} - </a>
+                      <span>{{item.content|formatURL}} </span>
+                    </div>
+                    <div *ngIf="checkTypeScript(item.typeName) == 'Default'">
+                      {{ item.content| formatString }}
+                    </div>
+                  </div>
+                </tds-dropdown-menu>
+                </tds-button-group>
+            </div>
+        </div>
+        <div *ngIf="item.typeName== 'CloseChrome'">
+          -
+        </div>
+        </td>
+        <td>{{ item.creationTime | date: "medium" }}</td>
+      </tr>
+    </tbody>
+  </tds-table>
+</div>
+<div class="showmoreLog pt-1">
+  <span class="pl-2">Xem thêm </span>
+  <tds-select
+  class="pl-2"
+    style="width: 70px"
+    valueField="id"
+    textField="name"
+    [ngModel]="choosePageSize"
+    placeholder="select item"
+    [data]="listPageSize"
+    (ngModelChange)="onChangePageSize($event)"
+    classIcon="tdsi-arrow-down-fill"
+    size="sm"
+  >
+  </tds-select>
+  <span class="pl-2">Logs</span>
+  <button [disabled]='dateFilter != ""'  class="ml-2"tds-button color="primary" size="sm" (click)="showMoreLogs()">Xác nhận
+  </button>
+</div>

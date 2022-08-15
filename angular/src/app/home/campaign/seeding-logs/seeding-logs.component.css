@@ -1,0 +1,27 @@
+.tableProfile{
+    height: 5vh; 
+    text-align: center
+}
+.tableProfile:hover{
+    background-color: #e5e5e5;
+}
+.hrefHover:hover
+{
+  color : rgb(45 196 241)
+}
+
+.link:visited {
+  color: green;
+}
+.link:link {
+  color: rgb(82, 82, 245)
+}
+.link:hover {
+  color: blue;
+}
+.link{
+  text-decoration: underline
+}
+.content{
+  font-weight: 600;
+}

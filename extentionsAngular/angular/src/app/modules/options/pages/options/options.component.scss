@@ -1,0 +1,24 @@
+.spin{
+  display: flex;
+  justify-content: center;
+  #spinChild{
+    width: 9rem;
+    height: 9rem;
+  }
+  .badge{
+    background-color: #007bff;
+  }
+}
+:host ::ng-deep .ant-result-icon>.anticon {
+  font-size: 84px;
+}
+:host ::ng-deep .ant-result-icon {
+  margin-bottom: 0;
+}
+:host ::ng-deep .ant-result-extra {
+  margin-top: 0;
+}
+.ant-btn
+{
+  margin-right: 5px;
+}

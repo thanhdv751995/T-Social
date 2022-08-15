@@ -1,0 +1,7 @@
+.tableProfile{
+    height: 5vh; 
+    text-align: center
+}
+.tableProfile:hover{
+    background-color: #e5e5e5;
+}

@@ -1,0 +1,12 @@
+.tableProfile{
+    height: 5vh; 
+    text-align: center
+}
+.tableProfile:hover{
+    background-color: #e5e5e5;
+}
+.listStatusInGroup{
+    margin : 1rem;
+    padding: 1rem;
+    border: solid 1px #e5e5e5;
+}

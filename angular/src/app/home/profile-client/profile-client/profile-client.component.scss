@@ -1,0 +1,83 @@
+.tableProfile{
+    height: 5vh; 
+    text-align: center;
+}
+.tableProfile:hover{
+    background-color: #e5e5e5;
+}
+.divTable{
+    margin: 1rem 1rem 0rem 1rem;
+    border : solid 1px #e5e5e5;
+    padding : 1rem;
+}
+.nameContent {
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1%;
+    background: rgb(45 196 241);
+    align-items: center;
+    color: white;
+    margin: 1% 1rem 0% 1rem;
+  }
+  .type {
+    display: flex;
+    align-content: space-between;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    width: 50%;
+  }
+.inputFill{
+    width: 30%;
+    border-radius: 14px;
+    text-align: center;
+}
+/* //////////// */
+$offset: 187;
+$duration: 1.4s;
+
+.spinner {
+  animation: rotator $duration linear infinite;
+}
+
+@keyframes rotator {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(270deg); }
+}
+
+.path {
+  stroke-dasharray: $offset;
+  stroke-dashoffset: 0;
+  transform-origin: center;
+  animation:
+    dash $duration ease-in-out infinite, 
+    colors ($duration*4) ease-in-out infinite;
+}
+
+@keyframes colors {
+  0% { stroke: #4285F4; }
+  25% { stroke: #DE3E35; }
+  50% { stroke: #F7C223; }
+  75% { stroke: #1B9A59; }
+  100% { stroke: #4285F4; }
+}
+
+@keyframes dash {
+ 0% { stroke-dashoffset: $offset; }
+ 50% {
+   stroke-dashoffset: $offset/4;
+   transform:rotate(135deg);
+ }
+ 100% {
+   stroke-dashoffset: $offset;
+   transform:rotate(450deg);
+ }
+}
+.loading{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+.loadingInfo{
+  opacity: 0.4;
+}

@@ -1,0 +1,77 @@
+<div>
+  <div class="logo">
+    <img src="https://mail.tmtco.asia/custom/webmail/img/loginlogo_2edd6.PNG" />
+    <label style="font-size: 20px; color: #f50; font-weight: 500"
+      >User Profile</label
+    >
+  </div>
+  <div></div>
+  <div class="mt-4">
+    <div class="profile">
+      <label> User Name</label>
+      <input
+        style="background: #e5e5e5"
+        disabled="true"
+        [(ngModel)]="userName"
+        type="text"
+      />
+    </div>
+    <div class="profile">
+      <label> Name</label>
+      <input [(ngModel)]="name" type="text" />
+    </div>
+    <div class="profile">
+      <label> Email</label>
+      <input [(ngModel)]="email" type="email" />
+    </div>
+    <div class="profile">
+      <label> Address</label>
+      <input [(ngModel)]="address" type="text" />
+    </div>
+    <div class="profile">
+      <label> Date of Birth</label>
+      <input [(ngModel)]="dateOfBirth" type="text" />
+    </div>
+    <div class="profile">
+      <label> Phone Number</label>
+      <input
+        style="background: #e5e5e5"
+        disabled="true"
+        [(ngModel)]="phoneNumber"
+        type="text"
+      />
+    </div>
+    <div class="profile">
+      <label> Avatar</label>
+      <div class="uploadAvatar">
+        <input
+          style="background: #e5e5e5"
+          disabled="true"
+          [(ngModel)]="avatarURL"
+          type="text"
+        />
+        <button (click)="selectAvatar.click()" tds-button color="primary">
+          <i class="tdsi-upload-fill"></i>
+          UpLoad
+        </button>
+        <input
+          type="file"
+          style="display: none;"
+          #selectAvatar
+          (change)="createAvartar($event)"
+          multiple
+        />
+      </div>
+    </div>
+  </div>
+  <div class="buttonAcept">
+    <button (click)="updateProfile()" tds-button color="primary">
+      <i class="tdsi-in-out-fill"></i>
+      Update
+    </button>
+    <button routerLink="/home" tds-button color="primary">
+      <i class="tdsi-back-fill"></i>
+      Back to Dashboard
+    </button>
+  </div>
+</div>

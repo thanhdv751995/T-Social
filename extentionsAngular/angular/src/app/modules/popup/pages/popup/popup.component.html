@@ -1,0 +1,42 @@
+<div class="header">
+  <div class=''>
+    <h4 style="line-height: 24px;padding: 5px 5px 5px 10px;color:#64C306;">
+      Login Facebook
+    </h4>
+  </div>
+</div>
+<div class="main">
+  <div>
+    <label style="margin-left: 10%;margin-bottom: 3px;">Cookie FB:
+    </label>
+    <textarea [(ngModel)]="cookies" rows="5" style="margin-left: 10%; width:80%;"></textarea>
+    <br>
+    <button type="button" (click)="setCookie(cookies)" class="btnLogin">Login</button>
+  </div>
+  <div>
+    <label style="margin-left: 10%;margin-bottom: 3px;">Proxy:
+    </label>
+    <input type="text" [(ngModel)]="proxyIp" style="margin-left: 33px">
+    <br>
+    <button type="button" class="btnLogin" (click)="setProxy(proxyIp)">Set proxy</button>
+  </div>
+  <div style="display: flex;">
+    <button type="button" class="btnLogin" (click)="getIp()">Get ip máy</button>
+    <p style="font-weight: 500;">{{ip}}</p>
+  </div>
+  <div>
+    <label style="margin-left: 10%;margin-bottom: 3px;">Secret:
+    </label>
+    <input type="text" style="margin-left: 33px" [(ngModel)]="secret">
+    <br>
+    <div style="display: flex;">
+      <button type="button" class="btnLogin" (click)="getPin(secret)">Get pin 2fa</button>
+      <p style="font-weight: 500;">{{pin2fa}}</p>
+    </div>
+  </div>
+</div>
+<button (click)="colorize()">reset script</button>
+<button (click)="colorize2()">reset localStorage</button>
+<button (click)="colorize4()">off proxy</button>
+<button (click)="colorize3()">close All</button>
+

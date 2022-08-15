@@ -1,0 +1,131 @@
+
+<div class="p-2">
+    <tds-table templateMode>
+      <thead>
+          <tr style="height: 5vh; text-align: center; background-color: #e5e5e5">
+              <th>Tài khoản FaceBook</th>
+              <th>Hành động</th>
+              <th>Thời gian thực thi</th>
+          </tr>
+      </thead>
+      <tbody *ngFor="let data of listSeedingJobFuture">
+          <tr style="height: 4vh; text-align: center">
+              <td>{{data.facebookName}}</td>
+              <td>
+                <div [ngSwitch]="data.type">
+                  <div *ngSwitchCase="'SurfingNewsfeed'">
+                    <span>{{data.value}} phút</span>
+                  </div>
+                  <div *ngSwitchCase="'SurfWatch'">
+                    <span>{{data.value}} phút</span>
+                  </div>
+                  <div *ngSwitchCase="'SurfStories'">
+                    <span>{{data.value}} phút</span>
+                  </div>
+                  <div *ngSwitchCase="'LikeNewsfeed'">
+                    <span>Bày tỏ cảm xúc </span> <span class="content">{{data.value|supportContent }}</span> <span> {{data.value |formatLogUrl }} lần</span>
+                  </div>
+                  <div *ngSwitchCase="'LikeVideoWatch'">
+                    <span>Bày tỏ cảm xúc </span> <span class="content">{{data.value|supportContent }}</span> <span> {{data.value |formatLogUrl }} lần</span>
+                  </div>
+                  <div *ngSwitchCase="'CommentPost'">
+                    <span>Bình luận </span> <span class="content">{{data.value | supportContent }}</span> <span> với </span>
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div *ngSwitchCase="'ReadMessage'">
+                    <span>{{data.value}} lần</span>
+                  </div>
+                  <div *ngSwitchCase="'ReadNotifications'">
+                    <span>{{data.value}} lần</span>
+                  </div>
+                  <div *ngSwitchCase="'AgreeToBeFriends'">
+                    <span>{{data.value}} lần</span>
+                  </div>
+                  <div *ngSwitchCase="'TextingFriends'">
+                    <span>Nhắn tin {{data.value|formatLogUrl }} người với nội dung </span> <span class="content">{{data.value|supportContent}}</span>
+                  </div>
+                  <div *ngSwitchCase="'MakeFriendsSuggestion'">
+                    <span>Gửi lời mời kết bạn {{data.value|formatLogUrl }} người với nội dung </span> <span class="content">{{data.value|supportContent}}</span>
+                  </div>
+                  <div *ngSwitchCase="'JoinGroup'">
+                    <span>Tham gia {{data.value|formatLogUrl }} nhóm với nội dung </span> <span class="content">{{data.value|supportContent}}</span>
+                  </div>
+                  <div *ngSwitchCase="'WatchLivestream'">
+                    <span>Xem LiveStream {{data.value|supportContent  }} phút với </span>
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div *ngSwitchCase="'ChangeAvatar'">
+                    <span>Đổi ảnh đại diện với </span>
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value|formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div *ngSwitchCase="'ReactionPost'">
+                    <span>Bày tỏ cảm xúc </span> <span class="content">{{data.value | formatURL  }}</span>
+                    <span> {{data.value|supportContent}}</span><span> lần với </span>
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div  *ngSwitchCase="'PostStatus'">
+                    <span>Đăng status với nội dung </span> <span class="content">{{data.value |formatLogUrl }}</span> 
+                    <span *ngIf="(data.value | supportContent) != null">
+                      <span> và </span> 
+                      <a class="link" *ngIf="!data.value.includes('https:')" href="https://facebook.com/{{data.value | supportContent}}" target="_blank">hình ảnh</a>
+                      <a class="link" *ngIf="data.value.includes('https:')" href="{{data.value | supportContent| formatLink}}" target="_blank">hình ảnh</a>
+                    </span>
+
+                  </div>
+                  <div *ngSwitchCase="'SharePost'">
+                    <span>Chia sẻ bài viết với nội dung </span> <span class="content">{{data.value|supportContent }}</span> 
+                    <span> và </span> 
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div *ngSwitchCase="'MessageToPage'">
+                    <span>Gửi tin nhắn vào page với nội dung </span> <span class="content">{{data.value|supportContent }}</span> 
+                    <span> và </span> 
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div *ngSwitchCase="'MessageToFriend'">
+                    <span>Gửi tin nhắn cho bạn </span> <span class="content">{{data.value|supportContent }}</span> 
+                    <span> và </span> 
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div *ngSwitchCase="'SharePostToGroup'">
+                    <span>Chia sẻ bài viết vô nhóm </span> <span class="content">{{data.value|supportContent }}</span> 
+                    <span> và </span> 
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">đường dẫn</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">đường dẫn</a>
+                  </div>
+                  <div *ngSwitchCase="'PostGroup'">
+                    <span>Đăng status vô </span>
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatLogUrl}}" target="_blank">nhóm</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatLogUrl| formatLink}}" target="_blank">nhóm</a>
+                    <span> với nội dung </span>
+                    <span class="content">{{data.value|supportContent }}</span> 
+                    <span> và </span>
+                    <a class="link" *ngIf="!data.value.includes('facebook.com')" href="https://facebook.com/{{data.value | formatURL}}" target="_blank">hình ảnh</a>
+                    <a class="link" *ngIf="data.value.includes('facebook.com')" href="{{data.value | formatURL| formatLink}}" target="_blank">hình ảnh</a>
+                  </div>
+                  <div *ngSwitchCase="'CloseChrome'">
+                      <span>_</span>
+                  </div>
+                  <div *ngSwitchDefault>
+                      <span>{{data.value}}</span>
+                  </div>
+              </div>
+              </td>
+              <td>{{data.enqueueAt | dateAgo}}</td>
+          </tr>
+      </tbody>
+  </tds-table>
+  </div>
+ <div class="note">
+   <div>
+     <span>Note : Có thể vào </span> <span style="text-decoration: underline; cursor: pointer;" routerLink="/history"> Lịch sử tác vụ </span> 
+    <span> để xem những tác vụ đã thực hiện xong </span>
+  </div>
+ </div>
